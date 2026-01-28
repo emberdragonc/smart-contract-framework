@@ -16,43 +16,50 @@ A production-ready smart contract development framework with automated CI/CD, E2
 │  2. UNIT TESTS                                                              │
 │     └─▶ forge test (all tests)                                              │
 │     └─▶ Code coverage report                                                │
+│     └─▶ Gas benchmarks (forge test --gas-report)                            │
 │                                                                              │
-│  3. E2E INTEGRATION TESTS                                                   │
+│  3. INVARIANT & FUZZ TESTS                                                  │
+│     └─▶ Stateful invariant testing                                          │
+│     └─▶ Fuzz testing with random inputs                                     │
+│     └─▶ Edge case discovery                                                 │
+│                                                                              │
+│  4. E2E INTEGRATION TESTS                                                   │
 │     └─▶ Fork testing against live network                                   │
-│     └─▶ Realistic scenario validation                                       │
+│     └─▶ Protocol fork mocks (Uniswap, Aave, etc.)                           │
+│     └─▶ Realistic DeFi scenario validation                                  │
 │                                                                              │
-│  4. SECURITY AUDIT (Automated)                                              │
+│  5. SECURITY AUDIT (Automated)                                              │
 │     └─▶ Full Slither scan                                                   │
 │     └─▶ Generate audit report                                               │
 │                                                                              │
-│  5. DEPLOY TO TESTNET                                                       │
+│  6. DEPLOY TO TESTNET                                                       │
 │     └─▶ Deploy to Base Sepolia                                              │
 │     └─▶ Verify on Basescan                                                  │
 │                                                                              │
-│  6. REQUEST EXTERNAL AUDIT                                                  │
+│  7. REQUEST EXTERNAL AUDIT                                                  │
 │     └─▶ Tag @clawditor on X                                                 │
 │     └─▶ Create GitHub issue for tracking                                    │
 │     └─▶ Wait for PR with audit findings                                     │
 │                                                                              │
-│  7. REVIEW & MERGE                                                          │
+│  8. REVIEW & MERGE                                                          │
 │     └─▶ Review @clawditor's PR                                              │
 │     └─▶ Address any findings                                                │
 │     └─▶ Merge if safe                                                       │
 │                                                                              │
-│  8. DEPLOY TO MAINNET (Manual trigger)                                      │
+│  9. DEPLOY TO MAINNET (Manual trigger)                                      │
 │     └─▶ Deploy to Base Mainnet                                              │
 │     └─▶ Verify on Basescan                                                  │
 │     └─▶ Announce on X                                                       │
 │                                                                              │
-│  9. FRONTEND DEPLOYMENT                                                     │
-│     └─▶ Build Next.js frontend                                              │
-│     └─▶ Deploy to Vercel                                                    │
-│     └─▶ Enable Speed Insights + Analytics                                   │
+│  10. FRONTEND DEPLOYMENT                                                    │
+│      └─▶ Build Next.js frontend                                             │
+│      └─▶ Deploy to Vercel                                                   │
+│      └─▶ Enable Speed Insights + Analytics                                  │
 │                                                                              │
-│  10. LEARN & EXTRACT SKILLS (Claudeception)                                 │
+│  11. LEARN & EXTRACT SKILLS (Claudeception)                                 │
 │      └─▶ Review entire build process                                        │
 │      └─▶ Extract reusable knowledge into skills                             │
-│      └─▶ Commit learnings to ~/clawd/skills/                                │
+│      └─▶ PR to BankrBot/moltbot-skills + tweet @bankrbot                    │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -86,6 +93,8 @@ cd frontend && npm install && npm run build
 │   └── Example.sol             # Smart contracts
 ├── test/
 │   ├── Example.t.sol           # Unit tests
+│   ├── invariant/
+│   │   └── Example.invariant.t.sol  # Invariant tests
 │   └── e2e/
 │       └── Example.e2e.t.sol   # E2E integration tests
 ├── script/
@@ -120,6 +129,122 @@ function test_E2E_FullUserJourney() public {
 Run with:
 ```bash
 forge test --match-path "test/e2e/*" --fork-url $BASE_SEPOLIA_RPC_URL -vvv
+```
+
+## Invariant & Fuzz Testing
+
+Catch edge cases that unit tests miss with stateful invariant testing and fuzz testing.
+
+### Invariant Tests
+```solidity
+// test/invariant/Example.invariant.t.sol
+
+contract ExampleInvariantTest is Test {
+    Example public example;
+    Handler public handler;
+    
+    function setUp() public {
+        example = new Example();
+        handler = new Handler(example);
+        targetContract(address(handler));
+    }
+    
+    // This should ALWAYS be true, no matter what sequence of calls
+    function invariant_totalSupplyMatchesBalances() public {
+        assertEq(example.totalSupply(), handler.ghost_totalDeposited());
+    }
+    
+    function invariant_contractSolvent() public {
+        assertGe(address(example).balance, example.totalDeposits());
+    }
+}
+```
+
+### Fuzz Tests
+```solidity
+// Foundry automatically fuzzes inputs
+function testFuzz_deposit(uint256 amount) public {
+    vm.assume(amount > 0 && amount < 100 ether);
+    
+    vm.deal(user, amount);
+    vm.prank(user);
+    example.deposit{value: amount}();
+    
+    assertEq(example.balanceOf(user), amount);
+}
+```
+
+Run with:
+```bash
+forge test --match-path "test/invariant/*" -vvv
+forge test --fuzz-runs 10000  # More fuzz iterations
+```
+
+## Protocol Fork Mocks
+
+Test against real DeFi protocols using fork mocks:
+
+### Uniswap V3 Integration
+```solidity
+// test/e2e/UniswapIntegration.e2e.t.sol
+
+contract UniswapIntegrationTest is Test {
+    ISwapRouter public router = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
+    
+    function setUp() public {
+        // Fork mainnet at specific block
+        vm.createSelectFork("mainnet", 18_000_000);
+    }
+    
+    function test_swapExactInputSingle() public {
+        // Test against real Uniswap liquidity
+    }
+}
+```
+
+### Aave V3 Integration
+```solidity
+contract AaveIntegrationTest is Test {
+    IPool public pool = IPool(0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2);
+    
+    function setUp() public {
+        vm.createSelectFork("mainnet", 18_000_000);
+    }
+    
+    function test_supplyAndBorrow() public {
+        // Test against real Aave markets
+    }
+}
+```
+
+### Common Protocol Addresses (Base)
+| Protocol | Address |
+|----------|---------|
+| Uniswap V3 Router | `0x2626664c2603336E57B271c5C0b26F421741e481` |
+| Aave V3 Pool | `0xA238Dd80C259a72e81d7e4664a9801593F98d1c5` |
+| WETH | `0x4200000000000000000000000000000000000006` |
+
+## Gas Benchmarks
+
+Track gas usage to optimize contracts:
+
+```bash
+# Generate gas report
+forge test --gas-report
+
+# Snapshot for comparison
+forge snapshot
+
+# Compare against previous snapshot
+forge snapshot --check
+```
+
+Example output:
+```
+| Contract | Function | Gas     |
+|----------|----------|---------|
+| Example  | deposit  | 45,234  |
+| Example  | withdraw | 32,456  |
 ```
 
 ## Security Tools
