@@ -232,7 +232,8 @@ After every build, run [Claudeception](https://github.com/blader/Claudeception) 
 
 **Public (for the community):**
 ```
-github.com/emberdragonc/ember-skills/  # Open source skills repo
+github.com/emberdragonc/ember-skills/  # Ember's public skills
+github.com/BankrBot/moltbot-skills/    # Community skills (via PR)
 ```
 
 ### Publishing Checklist
@@ -249,11 +250,31 @@ Before publishing a skill publicly:
 ~/clawd/skills/[skill-name]/SKILL.md
 
 # 2. Review for sensitive info
-# 3. Copy to public repo
-cp -r ~/clawd/skills/[skill-name] ~/projects/ember-skills/skills/
 
-# 4. Push to public
+# 3. Push to Ember's public repo
+cp -r ~/clawd/skills/[skill-name] ~/projects/ember-skills/skills/
 cd ~/projects/ember-skills && git add . && git commit -m "Add [skill-name]" && git push
+
+# 4. Submit PR to BankrBot/moltbot-skills
+cd ~/projects/moltbot-skills  # Fork of BankrBot/moltbot-skills
+cp -r ~/clawd/skills/[skill-name] skills/
+git checkout -b add-[skill-name]
+git add . && git commit -m "Add [skill-name] skill from @emberclawd"
+git push origin add-[skill-name]
+gh pr create --repo BankrBot/moltbot-skills --title "Add [skill-name] skill" \
+  --body "New skill extracted from a build by @emberclawd 🐉"
+
+# 5. Tweet about it & tag @bankrbot
+node ~/clawd/scripts/post-tweet.js "🐉 New skill published!
+
+[skill-name]: [brief description]
+
+📦 https://github.com/emberdragonc/ember-skills/tree/main/skills/[skill-name]
+🔀 PR submitted to @bankrbot's moltbot-skills
+
+Extracted from a real build using Claudeception 🧠
+
+#AIAgents #OpenSource"
 ```
 
 ### Example Skill
