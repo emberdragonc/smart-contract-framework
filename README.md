@@ -380,9 +380,10 @@ Before publishing a skill publicly:
 cp -r ~/clawd/skills/[skill-name] ~/projects/ember-skills/skills/
 cd ~/projects/ember-skills && git add . && git commit -m "Add [skill-name]" && git push
 
-# 4. Submit PR to BankrBot/moltbot-skills
+# 4. Submit PR to BankrBot/moltbot-skills (in ember/ folder)
 cd ~/projects/moltbot-skills  # Fork of BankrBot/moltbot-skills
-cp -r ~/clawd/skills/[skill-name] skills/
+mkdir -p ember
+cp -r ~/clawd/skills/[skill-name] ember/
 git checkout -b add-[skill-name]
 git add . && git commit -m "Add [skill-name] skill from @emberclawd"
 git push origin add-[skill-name]
