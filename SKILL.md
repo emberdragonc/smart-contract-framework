@@ -8,11 +8,11 @@
 This framework ensures every contract I build follows security best practices. **No shortcuts.**
 
 ```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   PLANNING  │───▶│   DESIGN    │───▶│    CODE     │───▶│    TEST     │───▶│   AUDIT     │───▶│   DEPLOY    │───▶│  FRONTEND   │
-│  (Get Shit  │    │             │    │  (Wingman)  │    │  (Foundry)  │    │  (My Tool)  │    │  (Verify)   │    │ (0xdesign)  │
-│    Done)    │    │             │    │             │    │             │    │             │    │             │    │             │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   PLANNING  │───▶│   DESIGN    │───▶│    CODE     │───▶│    TEST     │───▶│   AUDIT     │───▶│   DEPLOY    │───▶│  FRONTEND   │───▶│    LEARN    │
+│  (Get Shit  │    │             │    │  (Wingman)  │    │  (Foundry)  │    │  (My Tool)  │    │  (Verify)   │    │ (0xdesign)  │    │(Claudecept) │
+│    Done)    │    │             │    │             │    │             │    │             │    │             │    │             │    │             │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
 ```
 
 ---
@@ -449,4 +449,110 @@ npm run dev
 
 ---
 
-*"Move fast, but verify everything."* 🐉
+## Phase 7: Learn & Extract Skills (Claudeception)
+
+**After completing the build, run a learning retrospective.**
+
+This phase uses [Claudeception](https://github.com/blader/Claudeception) to analyze the entire build process and extract reusable knowledge into new skills.
+
+### 7.1 Trigger Learning Review
+
+After frontend is complete (or after any major phase):
+
+```bash
+# In Claude Code session
+/claudeception
+```
+
+Or explicitly:
+```
+"Review what we learned building this contract and extract any skills"
+```
+
+### 7.2 What to Capture
+
+Look for extractable knowledge in each phase:
+
+| Phase | Example Learnings |
+|-------|-------------------|
+| Planning | New scope patterns, risk identification methods |
+| Design | Architecture decisions, token economic patterns |
+| Code | Solidity patterns, gas optimizations, library gotchas |
+| Test | Foundry tricks, edge cases discovered, fuzz strategies |
+| Audit | New vulnerability patterns, tool limitations |
+| Deploy | Network-specific issues, verification quirks |
+| Frontend | Web3 UI patterns, wallet integration fixes |
+
+### 7.3 Skill Quality Gates
+
+Before creating a skill, verify:
+- [ ] **Non-obvious**: Required discovery, not just documentation
+- [ ] **Reusable**: Will help future builds, not just this one
+- [ ] **Verified**: Actually worked, not theoretical
+- [ ] **Specific**: Clear trigger conditions (errors, symptoms)
+
+### 7.4 Save New Skills
+
+```bash
+# Project-specific skills (this repo)
+./skills/[skill-name]/SKILL.md
+
+# User-wide skills (apply to all builds)
+~/.claude/skills/[skill-name]/SKILL.md
+
+# Clawdbot skills (Ember's global knowledge)
+~/clawd/skills/[skill-name]/SKILL.md
+```
+
+### 7.5 Self-Reflection Prompts
+
+After the build, ask:
+- "What took longer than expected? Why?"
+- "What error messages were misleading?"
+- "What would I do differently next time?"
+- "What library/tool behavior surprised me?"
+- "What security pattern was non-obvious?"
+
+### 7.6 Example Skill Extractions
+
+**From a staking contract build:**
+```markdown
+---
+name: synthetix-staking-rewards-gotcha
+description: |
+  Fix for "reward rate too high" error when using Synthetix StakingRewards. 
+  Use when: (1) notifyRewardAmount reverts unexpectedly, (2) reward distribution 
+  seems off, (3) integrating StakingRewards with custom token economics.
+---
+```
+
+**From a deployment:**
+```markdown
+---
+name: base-mainnet-verification-timeout
+description: |
+  Handle Basescan verification timeouts on mainnet. Use when: (1) forge verify-contract
+  hangs, (2) verification fails with "contract not found", (3) deploying complex
+  contracts with many dependencies on Base.
+---
+```
+
+### 7.7 Commit Learnings
+
+After creating skills:
+```bash
+# If skills added to this repo
+git add skills/
+git commit -m "Add skills extracted from [project-name] build"
+git push
+
+# Update Ember's global skills
+cd ~/clawd/skills
+git add .
+git commit -m "New skills from [project-name] build"
+git push
+```
+
+---
+
+*"Move fast, verify everything, and LEARN from every build."* 🐉
