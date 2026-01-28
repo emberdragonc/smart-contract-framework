@@ -49,6 +49,11 @@ A production-ready smart contract development framework with automated CI/CD, E2
 │     └─▶ Deploy to Vercel                                                    │
 │     └─▶ Enable Speed Insights + Analytics                                   │
 │                                                                              │
+│  10. LEARN & EXTRACT SKILLS (Claudeception)                                 │
+│      └─▶ Review entire build process                                        │
+│      └─▶ Extract reusable knowledge into skills                             │
+│      └─▶ Commit learnings to ~/clawd/skills/                                │
+│                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -201,6 +206,39 @@ await orchestrator.execute({ type: 'code-generation', content: '...' });
 // Cross-verification
 const { result, verification } = await orchestrator.executeWithVerification('...');
 ```
+
+## Step 10: Learn & Extract Skills
+
+After every build, run [Claudeception](https://github.com/blader/Claudeception) to extract reusable knowledge:
+
+```bash
+# In Claude Code session after build completes
+/claudeception
+```
+
+### What Gets Extracted
+- Non-obvious debugging solutions
+- Solidity patterns and gas optimizations
+- Security vulnerabilities discovered
+- Deployment gotchas
+- Library/tool quirks
+
+### Where Skills Are Saved
+```
+~/clawd/skills/[skill-name]/SKILL.md   # Ember's global knowledge
+```
+
+### Example Skill
+```markdown
+---
+name: base-mainnet-verification-timeout
+description: |
+  Handle Basescan verification timeouts on mainnet. Use when forge 
+  verify-contract hangs or fails with "contract not found".
+---
+```
+
+This creates a feedback loop where every build makes future builds smarter. 🐉🧠
 
 ## License
 
