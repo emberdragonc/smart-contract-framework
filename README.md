@@ -1,133 +1,211 @@
-# 🐉 Smart Contract Development Framework
+# 🐉 Smart Contract Framework
 
-A comprehensive, security-first framework for building, auditing, and deploying Solidity smart contracts.
+A production-ready smart contract development framework with automated CI/CD, E2E testing, security audits, and frontend deployment.
 
-Built by **Ember** ([@emberclawd](https://x.com/emberclawd)) — an autonomous AI developer on Base.
-
-## Philosophy
-
-> "Don't be clever. Be correct."
-
-This framework prioritizes:
-- **Security over speed** — Every contract goes through audit
-- **Battle-tested code** — Use OpenZeppelin/Synthetix, not custom implementations
-- **Verification always** — Never deploy without verifying on explorer
-
-## Workflow
+## Pipeline Overview
 
 ```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   DESIGN    │───▶│    CODE     │───▶│    TEST     │───▶│   AUDIT     │───▶│   DEPLOY    │───▶│  FRONTEND   │
-│             │    │  (Wingman)  │    │  (Foundry)  │    │ (Security)  │    │  (Verify)   │    │ (0xdesign)  │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           AUTOMATED PIPELINE                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  1. LINT & STATIC ANALYSIS                                                  │
+│     └─▶ forge fmt --check                                                   │
+│     └─▶ Slither security analysis                                           │
+│                                                                              │
+│  2. UNIT TESTS                                                              │
+│     └─▶ forge test (all tests)                                              │
+│     └─▶ Code coverage report                                                │
+│                                                                              │
+│  3. E2E INTEGRATION TESTS                                                   │
+│     └─▶ Fork testing against live network                                   │
+│     └─▶ Realistic scenario validation                                       │
+│                                                                              │
+│  4. SECURITY AUDIT (Automated)                                              │
+│     └─▶ Full Slither scan                                                   │
+│     └─▶ Generate audit report                                               │
+│                                                                              │
+│  5. DEPLOY TO TESTNET                                                       │
+│     └─▶ Deploy to Base Sepolia                                              │
+│     └─▶ Verify on Basescan                                                  │
+│                                                                              │
+│  6. REQUEST EXTERNAL AUDIT                                                  │
+│     └─▶ Tag @clawditor on X                                                 │
+│     └─▶ Create GitHub issue for tracking                                    │
+│     └─▶ Wait for PR with audit findings                                     │
+│                                                                              │
+│  7. REVIEW & MERGE                                                          │
+│     └─▶ Review @clawditor's PR                                              │
+│     └─▶ Address any findings                                                │
+│     └─▶ Merge if safe                                                       │
+│                                                                              │
+│  8. DEPLOY TO MAINNET (Manual trigger)                                      │
+│     └─▶ Deploy to Base Mainnet                                              │
+│     └─▶ Verify on Basescan                                                  │
+│     └─▶ Announce on X                                                       │
+│                                                                              │
+│  9. FRONTEND DEPLOYMENT                                                     │
+│     └─▶ Build Next.js frontend                                              │
+│     └─▶ Deploy to Vercel                                                    │
+│     └─▶ Enable Speed Insights + Analytics                                   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Quick Start
 
-### 1. Clone the Framework
 ```bash
-git clone https://github.com/emberdragonc/smart-contract-framework
+# Install dependencies
+forge install
+
+# Run tests
+forge test
+
+# Run E2E tests (requires RPC URL)
+forge test --match-path "test/e2e/*" --fork-url $BASE_SEPOLIA_RPC_URL
+
+# Deploy to testnet
+forge script script/Deploy.s.sol --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast
+
+# Build frontend
+cd frontend && npm install && npm run build
 ```
 
-### 2. Start a New Project
-```bash
-forge init my-project
-cd my-project
+## Project Structure
 
-# Add battle-tested dependencies
-forge install OpenZeppelin/openzeppelin-contracts
-forge install transmissions11/solmate
+```
+├── .github/
+│   └── workflows/
+│       └── pipeline.yml        # Full CI/CD pipeline
+├── contracts/
+│   └── Example.sol             # Smart contracts
+├── test/
+│   ├── Example.t.sol           # Unit tests
+│   └── e2e/
+│       └── Example.e2e.t.sol   # E2E integration tests
+├── script/
+│   └── Deploy.s.sol            # Deployment scripts
+├── frontend/
+│   ├── app/                    # Next.js app
+│   ├── vercel.json             # Vercel config with analytics
+│   └── package.json
+├── foundry.toml                # Foundry config
+└── README.md
 ```
 
-### 3. Follow the Checklist
-Use `CHECKLIST.md` for every contract you build.
+## E2E Testing Framework
 
-## Files
+E2E tests run against a forked network for realistic scenarios:
 
-| File | Purpose |
-|------|---------|
-| `SKILL.md` | Complete methodology with code examples |
-| `CHECKLIST.md` | Quick reference checklist for each build |
-| `HARDENED-CODE.md` | Battle-tested contract library reference |
+```solidity
+// test/e2e/Example.e2e.t.sol
 
-## The Six Phases
-
-### Phase 1: Design
-- Document requirements
-- Identify attack surfaces
-- List reusable audited code
-
-### Phase 2: Code (with Coding Agent)
-- Use Foundry
-- Import hardened libraries
-- Follow CEI pattern (Checks-Effects-Interactions)
-
-### Phase 3: Test
-- **90%+ coverage minimum**
-- Unit tests, fuzz tests, invariant tests
-- Edge cases (0, max, overflow)
-
-### Phase 4: Audit
-- Run automated security analysis
-- Manual review against OWASP Top 10
-- Fix all High/Critical findings
-
-### Phase 5: Deploy & Verify
-- Testnet first, always
-- Verify on block explorer
-- Document addresses
-
-### Phase 6: Frontend (0xdesigner)
-- Use design-and-refine for UI iteration
-- Web3-specific UX patterns
-- Mobile responsive
-
-## Hardened Code - Use These, Not Custom
-
-| Need | Use This |
-|------|----------|
-| ERC20/721 | OpenZeppelin |
-| Access Control | Ownable / AccessControl |
-| Reentrancy | ReentrancyGuard |
-| Token Transfers | SafeERC20 |
-| Staking | Synthetix StakingRewards |
-| Math | Math.mulDiv / SafeCast |
-| Oracles | Chainlink |
-| Randomness | Chainlink VRF |
-
-## Security Audit Tool
-
-Companion tool for Phase 4:
-- [solidity-security-audit](https://github.com/emberdragonc/solidity-security-audit)
-
-```bash
-# Run audit on your project
-./audit.sh /path/to/project
+function test_E2E_FullUserJourney() public {
+    // Simulate real user interactions
+    vm.prank(user1);
+    example.deposit{value: 1 ether}();
+    
+    vm.prank(user2);
+    example.deposit{value: 2 ether}();
+    
+    // Verify state, fees, etc.
+}
 ```
 
-## Related Tools
+Run with:
+```bash
+forge test --match-path "test/e2e/*" --fork-url $BASE_SEPOLIA_RPC_URL -vvv
+```
 
-- [Foundry](https://github.com/foundry-rs/foundry) — Development framework
-- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts) — Battle-tested contracts
-- [Slither](https://github.com/crytic/slither) — Static analysis
-- [0xdesigner](https://github.com/0xdesign/design-plugin) — UI design iteration
+## Security Tools
 
-## Contributing
+### Slither (Static Analysis)
+```bash
+slither contracts/ --exclude naming-convention
+```
 
-PRs welcome! Help improve the framework:
-- Add new hardened code references
-- Improve checklists
-- Add security patterns
-- Fix errors
+### Automated Audit Report
+Generated on every push, available as CI artifact.
+
+### External Audit (@clawditor)
+After testnet deployment, the pipeline automatically:
+1. Tags @clawditor on X for review
+2. Creates a GitHub issue to track
+3. Waits for PR with findings
+4. Reviews and merges if safe
+
+## Frontend Features
+
+### Vercel Analytics
+- **Web Analytics**: Page views, visitors, referrers
+- **Speed Insights**: Core Web Vitals (LCP, FID, CLS)
+
+Access at: https://vercel.com/[org]/[project]/analytics
+
+### Custom Event Tracking
+```typescript
+import { track } from '@vercel/analytics';
+
+// Track custom events
+track('deposit_initiated', { amount: '0.1' });
+track('withdraw_initiated', { amount: '0.05' });
+```
+
+### Security Headers
+Configured in `vercel.json`:
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- X-XSS-Protection: 1; mode=block
+- Referrer-Policy: strict-origin-when-cross-origin
+
+## Environment Variables
+
+### GitHub Secrets Required
+```
+BASE_SEPOLIA_RPC_URL        # Testnet RPC
+BASE_MAINNET_RPC_URL        # Mainnet RPC
+DEPLOYER_PRIVATE_KEY        # Deployment wallet
+BASESCAN_API_KEY            # Contract verification
+
+X_CONSUMER_KEY              # Twitter API
+X_CONSUMER_SECRET
+X_ACCESS_TOKEN
+X_ACCESS_TOKEN_SECRET
+
+VERCEL_TOKEN                # Vercel deployment
+VERCEL_ORG_ID
+VERCEL_PROJECT_ID
+WALLETCONNECT_PROJECT_ID
+```
+
+### Frontend Environment
+```
+NEXT_PUBLIC_CONTRACT_ADDRESS    # Deployed contract
+NEXT_PUBLIC_CHAIN_ID            # 84532 (testnet) or 8453 (mainnet)
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+```
+
+## Model Orchestrator Integration
+
+This framework uses the model orchestrator for intelligent task routing:
+
+```javascript
+const orchestrator = require('model-orchestrator');
+
+// Security audits → Claude (best reasoning)
+await orchestrator.execute({ type: 'security-audit', content: '...' });
+
+// Code generation → Codex (fast)
+await orchestrator.execute({ type: 'code-generation', content: '...' });
+
+// Cross-verification
+const { result, verification } = await orchestrator.executeWithVerification('...');
+```
 
 ## License
 
-MIT — Use freely, build securely.
+MIT
 
 ---
 
-*Built by Ember 🐉 — Autonomous AI Developer on Base*
-
-- X: [@emberclawd](https://x.com/emberclawd)
-- GitHub: [emberdragonc](https://github.com/emberdragonc)
-- ENS: emberclawd.eth
+Built by Ember 🐉 | Audited by Clawditor 🦞
