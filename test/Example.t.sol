@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {Test, console} from "forge-std/Test.sol";
-import {Example} from "../contracts/Example.sol";
+import { Test, console } from "forge-std/Test.sol";
+import { Example } from "../contracts/Example.sol";
 
 contract ExampleTest is Test {
     Example public example;
@@ -19,9 +19,9 @@ contract ExampleTest is Test {
         feeRecipient = makeAddr("feeRecipient");
         user1 = makeAddr("user1");
         user2 = makeAddr("user2");
-        
+
         example = new Example(feeRecipient);
-        
+
         // Fund users
         vm.deal(user1, 10 ether);
         vm.deal(user2, 10 ether);
@@ -50,12 +50,12 @@ contract ExampleTest is Test {
         uint256 depositAmount = 1 ether;
         uint256 expectedFee = (depositAmount * 100) / 10000; // 1%
         uint256 expectedNet = depositAmount - expectedFee;
-        
+
         vm.prank(user1);
         vm.expectEmit(true, false, false, true);
         emit Deposited(user1, expectedNet);
-        example.deposit{value: depositAmount}();
-        
+        example.deposit{ value: depositAmount }();
+
         assertEq(example.balances(user1), expectedNet);
         assertEq(example.totalDeposits(), expectedNet);
         assertEq(feeRecipient.balance, expectedFee);
@@ -64,19 +64,19 @@ contract ExampleTest is Test {
     function test_Deposit_RevertZeroAmount() public {
         vm.prank(user1);
         vm.expectRevert(Example.ZeroAmount.selector);
-        example.deposit{value: 0}();
+        example.deposit{ value: 0 }();
     }
 
     function testFuzz_Deposit(uint256 amount) public {
         vm.assume(amount > 0 && amount <= 100 ether);
         vm.deal(user1, amount);
-        
+
         uint256 expectedFee = (amount * 100) / 10000;
         uint256 expectedNet = amount - expectedFee;
-        
+
         vm.prank(user1);
-        example.deposit{value: amount}();
-        
+        example.deposit{ value: amount }();
+
         assertEq(example.balances(user1), expectedNet);
     }
 
@@ -87,16 +87,16 @@ contract ExampleTest is Test {
     function test_Withdraw() public {
         // Setup: deposit first
         vm.prank(user1);
-        example.deposit{value: 1 ether}();
+        example.deposit{ value: 1 ether }();
         uint256 balance = example.balances(user1);
-        
+
         uint256 userBalanceBefore = user1.balance;
-        
+
         vm.prank(user1);
         vm.expectEmit(true, false, false, true);
         emit Withdrawn(user1, balance);
         example.withdraw(balance);
-        
+
         assertEq(example.balances(user1), 0);
         assertEq(user1.balance, userBalanceBefore + balance);
     }
@@ -115,13 +115,13 @@ contract ExampleTest is Test {
 
     function test_Withdraw_Partial() public {
         vm.prank(user1);
-        example.deposit{value: 1 ether}();
+        example.deposit{ value: 1 ether }();
         uint256 balance = example.balances(user1);
         uint256 withdrawAmount = balance / 2;
-        
+
         vm.prank(user1);
         example.withdraw(withdrawAmount);
-        
+
         assertEq(example.balances(user1), balance - withdrawAmount);
     }
 
@@ -153,10 +153,10 @@ contract ExampleTest is Test {
     function test_Withdraw_ReentrancyProtection() public {
         ReentrancyAttacker attacker = new ReentrancyAttacker(address(example));
         vm.deal(address(attacker), 2 ether);
-        
+
         // Attacker deposits
-        attacker.deposit{value: 1 ether}();
-        
+        attacker.deposit{ value: 1 ether }();
+
         // Attack should fail due to reentrancy guard
         vm.expectRevert();
         attacker.attack();
@@ -173,7 +173,7 @@ contract ReentrancyAttacker {
     }
 
     function deposit() external payable {
-        target.deposit{value: msg.value}();
+        target.deposit{ value: msg.value }();
     }
 
     function attack() external {

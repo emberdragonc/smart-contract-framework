@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title Example Contract
@@ -13,19 +13,19 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 contract Example is Ownable, ReentrancyGuard {
     /// @notice Emitted when a deposit is made
     event Deposited(address indexed user, uint256 amount);
-    
+
     /// @notice Emitted when a withdrawal is made
     event Withdrawn(address indexed user, uint256 amount);
 
     /// @notice User balances
     mapping(address => uint256) public balances;
-    
+
     /// @notice Total deposited
     uint256 public totalDeposits;
 
     /// @notice Protocol fee in basis points (100 = 1%)
     uint256 public constant FEE_BPS = 100;
-    
+
     /// @notice Fee recipient
     address public feeRecipient;
 
@@ -43,19 +43,19 @@ contract Example is Ownable, ReentrancyGuard {
      */
     function deposit() external payable nonReentrant {
         if (msg.value == 0) revert ZeroAmount();
-        
+
         uint256 fee = (msg.value * FEE_BPS) / 10000;
         uint256 netAmount = msg.value - fee;
-        
+
         balances[msg.sender] += netAmount;
         totalDeposits += netAmount;
-        
+
         // Send fee
         if (fee > 0) {
-            (bool success,) = feeRecipient.call{value: fee}("");
+            (bool success,) = feeRecipient.call{ value: fee }("");
             if (!success) revert TransferFailed();
         }
-        
+
         emit Deposited(msg.sender, netAmount);
     }
 
@@ -66,13 +66,13 @@ contract Example is Ownable, ReentrancyGuard {
     function withdraw(uint256 amount) external nonReentrant {
         if (amount == 0) revert ZeroAmount();
         if (balances[msg.sender] < amount) revert InsufficientBalance();
-        
+
         balances[msg.sender] -= amount;
         totalDeposits -= amount;
-        
-        (bool success,) = msg.sender.call{value: amount}("");
+
+        (bool success,) = msg.sender.call{ value: amount }("");
         if (!success) revert TransferFailed();
-        
+
         emit Withdrawn(msg.sender, amount);
     }
 
