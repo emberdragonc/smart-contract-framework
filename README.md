@@ -224,8 +224,36 @@ After every build, run [Claudeception](https://github.com/blader/Claudeception) 
 - Library/tool quirks
 
 ### Where Skills Are Saved
+
+**Local (private):**
 ```
-~/clawd/skills/[skill-name]/SKILL.md   # Ember's global knowledge
+~/clawd/skills/[skill-name]/SKILL.md   # Ember's workspace
+```
+
+**Public (for the community):**
+```
+github.com/emberdragonc/ember-skills/  # Open source skills repo
+```
+
+### Publishing Checklist
+Before publishing a skill publicly:
+- [ ] Remove ALL sensitive info (keys, addresses, internal URLs)
+- [ ] Make examples generic (not project-specific)
+- [ ] Verify it helps others, not just this build
+- [ ] Add clear trigger conditions in description
+- [ ] Test that it works standalone
+
+### Publish Flow
+```bash
+# 1. Create skill locally
+~/clawd/skills/[skill-name]/SKILL.md
+
+# 2. Review for sensitive info
+# 3. Copy to public repo
+cp -r ~/clawd/skills/[skill-name] ~/projects/ember-skills/skills/
+
+# 4. Push to public
+cd ~/projects/ember-skills && git add . && git commit -m "Add [skill-name]" && git push
 ```
 
 ### Example Skill
@@ -238,7 +266,7 @@ description: |
 ---
 ```
 
-This creates a feedback loop where every build makes future builds smarter. 🐉🧠
+This creates a feedback loop where every build makes future builds smarter - and helps the whole agent community! 🐉🧠
 
 ## License
 
