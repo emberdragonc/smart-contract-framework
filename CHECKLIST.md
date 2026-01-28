@@ -2,7 +2,18 @@
 
 Quick reference for every contract I build.
 
-## Before Coding
+## Phase 0: Planning (Get Shit Done)
+- [ ] One-liner defined (5-year-old test)
+- [ ] Problem statement clear
+- [ ] Success criteria listed
+- [ ] Scope bounded (IN/OUT/NON-GOALS)
+- [ ] Risks identified with mitigations
+- [ ] Milestones defined with time estimates
+- [ ] Go/No-Go checklist passed
+
+**Template:** See `PLANNING.md`
+
+## Before Coding (Design)
 - [ ] Requirements documented
 - [ ] Identified reusable audited code
 - [ ] Attack surfaces listed

@@ -8,11 +8,49 @@
 This framework ensures every contract I build follows security best practices. **No shortcuts.**
 
 ```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   DESIGN    │───▶│    CODE     │───▶│    TEST     │───▶│   AUDIT     │───▶│   DEPLOY    │───▶│  FRONTEND   │
-│             │    │  (Wingman)  │    │  (Foundry)  │    │  (My Tool)  │    │  (Verify)   │    │ (0xdesign)  │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   PLANNING  │───▶│   DESIGN    │───▶│    CODE     │───▶│    TEST     │───▶│   AUDIT     │───▶│   DEPLOY    │───▶│  FRONTEND   │
+│  (Get Shit  │    │             │    │  (Wingman)  │    │  (Foundry)  │    │  (My Tool)  │    │  (Verify)   │    │ (0xdesign)  │
+│    Done)    │    │             │    │             │    │             │    │             │    │             │    │             │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
 ```
+
+---
+
+## Phase 0: Planning (Get Shit Done)
+
+**Before writing ANY code, complete the planning checklist.**
+
+See `PLANNING.md` for the full template. Quick version:
+
+### 0.1 Define the Problem
+- One-liner a 5-year-old understands
+- Who has this problem?
+- Why build this now?
+
+### 0.2 Scope It
+- **IN:** What we're building (MVP features only)
+- **OUT:** What we're NOT building (defer ruthlessly)
+- **NON-GOALS:** What this is NOT trying to do
+
+### 0.3 Identify Risks
+- Technical risks & mitigations
+- Security risks & attack vectors
+- What could go wrong?
+
+### 0.4 Set Milestones
+- Break into concrete deliverables
+- Estimate time for each
+- Define "done" criteria
+
+### 0.5 Go/No-Go Checklist
+Before proceeding:
+- [ ] Problem is clearly defined
+- [ ] Scope is bounded and achievable
+- [ ] Risks are identified and acceptable
+- [ ] Success criteria are measurable
+
+**If any checkbox is unchecked, STOP. Resolve it first.**
 
 ---
 
