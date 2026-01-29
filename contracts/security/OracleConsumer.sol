@@ -19,22 +19,22 @@ abstract contract OracleConsumer {
     // ============ Constants ============
     /// @notice Default staleness threshold (1 hour)
     uint256 public constant DEFAULT_STALENESS_THRESHOLD = 1 hours;
-    
+
     /// @notice Minimum acceptable price (prevents zero/negative)
     uint256 public constant MIN_VALID_PRICE = 1;
-    
+
     /// @notice Maximum price deviation from last known (50% = 5000 bps)
     uint256 public constant MAX_PRICE_DEVIATION_BPS = 5000;
-    
+
     uint256 internal constant BPS_DENOMINATOR = 10000;
 
     // ============ Storage ============
     /// @notice Staleness threshold in seconds
     uint256 public stalenessThreshold;
-    
+
     /// @notice Last validated price for deviation checks
     uint256 public lastValidPrice;
-    
+
     /// @notice Timestamp of last valid price
     uint256 public lastPriceTimestamp;
 
@@ -57,12 +57,12 @@ abstract contract OracleConsumer {
         if (block.timestamp - updatedAt > stalenessThreshold) {
             revert StalePrice();
         }
-        
+
         // Check for invalid price
         if (price < MIN_VALID_PRICE) {
             revert InvalidPrice();
         }
-        
+
         // Check for extreme deviation (circuit breaker)
         if (lastValidPrice > 0) {
             uint256 deviation = _calculateDeviation(price, lastValidPrice);
@@ -70,7 +70,7 @@ abstract contract OracleConsumer {
                 revert PriceOutOfBounds();
             }
         }
-        
+
         return price;
     }
 
@@ -136,22 +136,22 @@ abstract contract ChainlinkConsumer is OracleConsumer {
         );
         function decimals() external view returns (uint8);
     }
-    
+
     // ============ Errors ============
     error InvalidRound();
     error NegativePrice();
-    
+
     // ============ Storage ============
     AggregatorV3Interface public priceFeed;
-    
+
     // ============ Constructor ============
     constructor(address _priceFeed) {
         if (_priceFeed == address(0)) revert OracleNotSet();
         priceFeed = AggregatorV3Interface(_priceFeed);
     }
-    
+
     // ============ Implementation ============
-    
+
     function _fetchOracleData() internal view override returns (uint256 price, uint256 updatedAt) {
         (
             uint80 roundId,
@@ -160,24 +160,24 @@ abstract contract ChainlinkConsumer is OracleConsumer {
             uint256 _updatedAt,
             uint80 answeredInRound
         ) = priceFeed.latestRoundData();
-        
+
         // Validate round
         if (answeredInRound < roundId) revert InvalidRound();
-        
+
         // Validate price is positive
         if (answer <= 0) revert NegativePrice();
-        
+
         price = uint256(answer);
         updatedAt = _updatedAt;
     }
-    
+
     /// @notice Get price with specified decimals
     /// @param targetDecimals Desired decimal precision
     /// @return price Normalized price
     function getPriceNormalized(uint8 targetDecimals) external returns (uint256 price) {
         uint256 rawPrice = _getValidatedPrice();
         uint8 feedDecimals = priceFeed.decimals();
-        
+
         if (targetDecimals >= feedDecimals) {
             price = rawPrice * (10 ** (targetDecimals - feedDecimals));
         } else {

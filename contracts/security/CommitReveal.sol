@@ -25,7 +25,7 @@ abstract contract CommitReveal {
     // ============ Constants ============
     /// @notice Minimum time between commit and reveal (prevents same-block reveal)
     uint256 public constant MIN_REVEAL_DELAY = 1 minutes;
-    
+
     /// @notice Maximum time to reveal after commit (prevents stale commits)
     uint256 public constant MAX_REVEAL_WINDOW = 24 hours;
 
@@ -36,10 +36,10 @@ abstract contract CommitReveal {
     /// @dev User computes: keccak256(abi.encodePacked(secret, userAddress))
     function commit(bytes32 hash) external virtual {
         if (commits[msg.sender] != bytes32(0)) revert AlreadyCommitted();
-        
+
         commits[msg.sender] = hash;
         commitTimestamps[msg.sender] = block.timestamp;
-        
+
         emit Committed(msg.sender, hash, block.timestamp);
     }
 
@@ -47,10 +47,10 @@ abstract contract CommitReveal {
     /// @dev Useful if user wants to change their commitment
     function cancelCommit() external virtual {
         if (commits[msg.sender] == bytes32(0)) revert NoCommitFound();
-        
+
         delete commits[msg.sender];
         delete commitTimestamps[msg.sender];
-        
+
         emit CommitCancelled(msg.sender);
     }
 
@@ -70,23 +70,23 @@ abstract contract CommitReveal {
     function _verifyReveal(bytes32 secret) internal {
         bytes32 storedCommit = commits[msg.sender];
         uint256 commitTime = commitTimestamps[msg.sender];
-        
+
         // Check commit exists
         if (storedCommit == bytes32(0)) revert NoCommitFound();
-        
+
         // Check timing
         uint256 elapsed = block.timestamp - commitTime;
         if (elapsed < MIN_REVEAL_DELAY) revert RevealTooEarly();
         if (elapsed > MAX_REVEAL_WINDOW) revert RevealTooLate();
-        
+
         // Verify the reveal matches the commit
         bytes32 expectedHash = keccak256(abi.encodePacked(secret, msg.sender));
         if (storedCommit != expectedHash) revert InvalidReveal();
-        
+
         // Clear the commit (single use)
         delete commits[msg.sender];
         delete commitTimestamps[msg.sender];
-        
+
         emit Revealed(msg.sender, block.timestamp);
     }
 
@@ -96,7 +96,7 @@ abstract contract CommitReveal {
     /// @return canReveal Whether the user can currently reveal
     function getCommitStatus(address user) external view returns (bool hasCommit, bool canReveal) {
         hasCommit = commits[user] != bytes32(0);
-        
+
         if (hasCommit) {
             uint256 elapsed = block.timestamp - commitTimestamps[user];
             canReveal = elapsed >= MIN_REVEAL_DELAY && elapsed <= MAX_REVEAL_WINDOW;
