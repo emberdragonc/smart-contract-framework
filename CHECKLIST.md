@@ -56,6 +56,8 @@ Quick reference for every contract I build.
 - [ ] SC08: No integer issues
 - [ ] SC09: Secure randomness (if applicable)
 - [ ] SC10: No DoS vectors
+- [ ] SC11: **EIP-7702 Compatible** - No `tx.origin == msg.sender` checks (breaks AA/batch wallets)
+- [ ] SC12: **Approval Patterns** - Frontend uses exact approvals, no infinite allowances
 
 ## Pre-Deploy
 - [ ] All tests pass
@@ -99,3 +101,6 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 - [ ] Gas estimation displayed
 - [ ] Clear error messages for reverts
 - [ ] Mobile responsive
+- [ ] **Exact approvals only** - no `type(uint256).max` approvals
+- [ ] **EIP-7702 batching** - detect smart wallets, batch approve+action when supported
+- [ ] **Fallback for EOAs** - 2-step approval flow for traditional wallets

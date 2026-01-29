@@ -352,6 +352,55 @@ After the audit:
 2. Review and address any issues
 3. Merge if safe
 
+## Security Standards
+
+### Exact Approvals (No Infinite Allowances)
+
+This framework **never** uses infinite token approvals (`type(uint256).max`).
+
+**Why?**
+- If a contract is compromised, infinite approvals let attackers drain ALL your tokens
+- Exact approvals limit exposure to only the transaction amount
+- With EIP-7702 batching, the UX is actually *better* than infinite approvals
+
+**Implementation:**
+```typescript
+// ❌ Never do this
+approve(spender, MaxUint256);
+
+// ✅ Always do this
+const exactAmount = parseUnits('100', 6);
+approve(spender, exactAmount);
+```
+
+See `frontend/app/page.tsx` for the complete implementation with EIP-7702 batching.
+
+### EIP-7702 Compatibility
+
+All contracts in this framework are compatible with EIP-7702 (account abstraction / smart wallets).
+
+**What this means:**
+- No `tx.origin == msg.sender` checks (they break smart wallets)
+- Use `ReentrancyGuard` instead of origin checks for security
+- Frontend detects wallet capabilities and uses batching when available
+
+**Contract Checklist:**
+```solidity
+// ❌ Breaks EIP-7702 wallets
+require(tx.origin == msg.sender, "No contracts");
+
+// ✅ Use reentrancy guards instead
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+```
+
+**Frontend Batching:**
+When a user connects with a smart wallet (Coinbase Wallet, Ambire, etc.), the frontend:
+1. Detects `wallet_getCapabilities` support
+2. Uses `wallet_sendCalls` to batch approve + action in one user confirmation
+3. Falls back to 2-tx flow for EOA wallets
+
+See `HARDENED-CODE.md` for implementation details.
+
 ## Frontend Features
 
 ### Vercel Analytics

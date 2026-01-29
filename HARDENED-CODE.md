@@ -176,6 +176,85 @@ import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 
 ---
 
+## EIP-7702 Compatibility (Smart Wallets)
+
+EIP-7702 enables EOAs to delegate to smart contract code, enabling batching and account abstraction.
+
+### ⚠️ Contract Compatibility Checklist
+```solidity
+// ❌ NEVER DO THIS - breaks smart wallets
+require(tx.origin == msg.sender, "No contracts");
+
+// ❌ ALSO BAD - same problem
+if (tx.origin != msg.sender) revert NotEOA();
+
+// ✅ DO THIS INSTEAD - use reentrancy guards
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+contract MyContract is ReentrancyGuard {
+    function deposit() external nonReentrant { }
+}
+```
+
+### Why tx.origin Checks Break
+With EIP-7702, a user's EOA can delegate to smart contract code. When they use batching:
+- `tx.origin` = user's address
+- `msg.sender` = user's address (via delegation)
+- But `tx.origin == msg.sender` check may still fail depending on implementation
+
+**Bottom line:** Use `ReentrancyGuard` instead of `tx.origin` checks. It's more secure AND compatible with smart wallets.
+
+---
+
+## Approval Patterns (Frontend Security)
+
+### ❌ NEVER: Infinite Approvals
+```typescript
+// DON'T DO THIS - exposes user to unlimited loss if contract exploited
+const MAX_UINT256 = 2n ** 256n - 1n;
+approve(spender, MAX_UINT256); // BAD!
+```
+
+### ✅ ALWAYS: Exact Approvals
+```typescript
+// Approve exactly what's needed for this transaction
+const exactAmount = parseUnits('100', 6); // 100 USDC
+approve(spender, exactAmount); // GOOD!
+```
+
+### EIP-7702 Batching (Best UX)
+With smart wallets, you can batch approve + action into one user confirmation:
+
+```typescript
+// Check for batching support
+const capabilities = await walletClient.request({
+  method: 'wallet_getCapabilities',
+  params: [address],
+});
+const supportsBatching = capabilities?.[chainId]?.atomicBatch?.supported;
+
+if (supportsBatching) {
+  // Single confirmation for approve + deposit
+  await walletClient.request({
+    method: 'wallet_sendCalls',
+    params: [{
+      version: '1.0',
+      chainId: `0x${chainId.toString(16)}`,
+      from: address,
+      calls: [
+        { to: tokenAddress, data: approveCalldata },
+        { to: contractAddress, data: depositCalldata },
+      ],
+    }],
+  });
+} else {
+  // Fallback: two separate transactions
+  await approve(spender, exactAmount);
+  await deposit(amount);
+}
+```
+
+---
+
 ## DO NOT Implement Custom
 
 | ❌ Don't Build | ✅ Use Instead |
