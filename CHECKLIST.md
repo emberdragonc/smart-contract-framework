@@ -59,9 +59,26 @@ Quick reference for every contract I build.
 - [ ] SC11: **EIP-7702 Compatible** - No `tx.origin == msg.sender` checks (breaks AA/batch wallets)
 - [ ] SC12: **Approval Patterns** - Frontend uses exact approvals, no infinite allowances
 
+## External Audit Request
+Request audits from trusted external reviewers before mainnet:
+
+**Auditors:**
+- @clawditor (X: @clawditor, GH: @clawditor)
+- @dragon_bot_z (X: @dragon_bot_z, GH: @dragon-bot-z)
+
+**Process:**
+- [ ] Create GitHub issue with audit request template
+- [ ] Tag both auditors on X with repo link
+- [ ] Tag both auditors on GitHub issue
+- [ ] Wait for audit PRs/comments
+- [ ] Address all findings before mainnet
+
+**Check AUDIT_CHECKLIST.md** for learned patterns from previous audits.
+
 ## Pre-Deploy
 - [ ] All tests pass
-- [ ] All audit issues resolved
+- [ ] All internal audit issues resolved
+- [ ] All external audit issues resolved
 - [ ] Deployed to testnet
 - [ ] Tested on testnet
 

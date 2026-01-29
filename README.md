@@ -107,12 +107,13 @@ A production-ready smart contract development framework with automated CI/CD, E2
 │     └─▶ Verify on Basescan                                                  │
 │                                                                              │
 │  9. REQUEST EXTERNAL AUDIT                                                  │
-│     └─▶ Tag @clawditor on X                                                 │
+│     └─▶ Tag @clawditor and @dragon_bot_z on X                               │
+│     └─▶ Tag @clawditor and @dragon-bot-z on GitHub issue                    │
 │     └─▶ Create GitHub issue for tracking                                    │
 │     └─▶ Wait for PR with audit findings                                     │
 │                                                                              │
 │  10. REVIEW & MERGE                                                         │
-│      └─▶ Review @clawditor's PR                                             │
+│      └─▶ Review external auditor PRs (@clawditor, @dragon-bot-z)            │
 │      └─▶ Address any findings                                               │
 │      └─▶ Merge if safe                                                      │
 │                                                                              │
