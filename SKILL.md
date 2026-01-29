@@ -86,32 +86,57 @@ forge install OpenZeppelin/openzeppelin-contracts
 # Add Solmate (gas-optimized)
 forge install transmissions11/solmate
 
+# Add Solady (ultra gas-optimized, audited)
+forge install Vectorized/solady
+
 # Setup remappings
 cat > remappings.txt << 'EOF'
 @openzeppelin/=lib/openzeppelin-contracts/
 solmate/=lib/solmate/src/
+solady/=lib/solady/src/
 EOF
 ```
 
-### 2.2 Hardened Code Library
+### 2.2 Knowledge Bases & Code Sources
+
+**ALWAYS reference these high-quality, audited repositories:**
+
+| Repository | Purpose | When to Use |
+|------------|---------|-------------|
+| [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts) | Battle-tested standards | Default choice for all standard implementations |
+| [Solady](https://github.com/Vectorized/solady) | Ultra gas-optimized | When gas efficiency is critical |
+| [Solmate](https://github.com/transmissions11/solmate) | Gas-optimized alternatives | Simpler gas-efficient implementations |
+| [Swiss-Knife](https://github.com/swiss-knife-xyz/swiss-knife) | Utils, decoders, explorers | Debugging, ABI decoding, calldata analysis |
+
+### 2.3 Hardened Code Library
 
 **ALWAYS use audited implementations when available:**
 
 | Need | Use This | NOT Custom Code |
 |------|----------|-----------------|
-| ERC20 | OpenZeppelin ERC20 | ❌ Custom token |
-| ERC721 | OpenZeppelin ERC721 | ❌ Custom NFT |
-| Access Control | OpenZeppelin Ownable/AccessControl | ❌ Custom auth |
-| Reentrancy Guard | OpenZeppelin ReentrancyGuard | ❌ Custom mutex |
-| SafeERC20 | OpenZeppelin SafeERC20 | ❌ Raw transfers |
-| Math | OpenZeppelin Math/SafeCast | ❌ Custom math |
+| ERC20 | OpenZeppelin ERC20 / Solady ERC20 | ❌ Custom token |
+| ERC721 | OpenZeppelin ERC721 / Solady ERC721 | ❌ Custom NFT |
+| ERC1155 | OpenZeppelin ERC1155 / Solady ERC1155 | ❌ Custom multi-token |
+| Access Control | OpenZeppelin Ownable / Solady Ownable | ❌ Custom auth |
+| Reentrancy Guard | OpenZeppelin ReentrancyGuard / Solady ReentrancyGuard | ❌ Custom mutex |
+| SafeERC20 | OpenZeppelin SafeERC20 / Solady SafeTransferLib | ❌ Raw transfers |
+| Math | OpenZeppelin Math / Solady FixedPointMathLib | ❌ Custom math |
 | Pausable | OpenZeppelin Pausable | ❌ Custom pause |
 | Staking | Synthetix StakingRewards | ❌ Custom staking |
 | Vesting | OpenZeppelin VestingWallet | ❌ Custom vesting |
 | Governance | OpenZeppelin Governor | ❌ Custom voting |
 | Upgrades | OpenZeppelin UUPS/Transparent | ❌ Custom proxy |
+| Merkle Proofs | OpenZeppelin MerkleProof / Solady MerkleProofLib | ❌ Custom merkle |
+| Signatures | OpenZeppelin ECDSA / Solady SignatureCheckerLib | ❌ Custom sig verify |
+| LibString | Solady LibString | ❌ Custom string utils |
+| LibClone | Solady LibClone | ❌ Custom minimal proxy |
 
-### 2.3 Coding Standards
+**Solady vs OpenZeppelin:**
+- Use **Solady** when gas is critical (often 50%+ cheaper)
+- Use **OpenZeppelin** when you need more features or broader compatibility
+- Both are audited and production-ready
+
+### 2.4 Coding Standards
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
@@ -159,7 +184,7 @@ contract MyContract is Ownable, ReentrancyGuard {
 }
 ```
 
-### 2.4 Wingman Workflow
+### 2.5 Wingman Workflow
 When using coding agent to develop:
 ```bash
 # Start wingman session
