@@ -318,6 +318,36 @@ Example output:
 | Example  | withdraw | 32,456  |
 ```
 
+## Security Documentation
+
+Comprehensive security resources based on [ConsenSys Best Practices](https://consensysdiligence.github.io/smart-contract-best-practices/):
+
+| Document | Description |
+|----------|-------------|
+| [docs/KNOWN-ATTACKS.md](docs/KNOWN-ATTACKS.md) | Attack vectors: reentrancy, oracle manipulation, frontrunning, DoS, etc. |
+| [docs/SECURITY-PHILOSOPHY.md](docs/SECURITY-PHILOSOPHY.md) | Security mindset and core principles |
+| [docs/PATTERNS.md](docs/PATTERNS.md) | Secure code patterns (CEI, pull payments, safe calls) |
+| [docs/SECURITY-TOOLS.md](docs/SECURITY-TOOLS.md) | Analysis tools guide (Slither, Echidna, Mythril) |
+| [docs/DEPLOYMENT-CHECKLIST.md](docs/DEPLOYMENT-CHECKLIST.md) | Pre-deployment security checklist |
+| [AUDIT_CHECKLIST.md](AUDIT_CHECKLIST.md) | Growing checklist from external audits |
+
+### Security Contracts
+
+Reusable security primitives in `contracts/security/`:
+
+| Contract | Purpose |
+|----------|---------|
+| `CommitReveal.sol` | Frontrunning protection via commit-reveal scheme |
+| `OracleConsumer.sol` | Secure oracle price consumption with staleness checks |
+| `PullPayment.sol` | DoS-resistant payment distribution |
+
+### Quick Security Scan
+
+```bash
+# Run local security analysis
+./scripts/security-scan.sh
+```
+
 ## Security Tools
 
 ### Slither (Static Analysis)
