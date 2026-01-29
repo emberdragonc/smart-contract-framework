@@ -328,11 +328,29 @@ slither contracts/ --exclude naming-convention
 Generated on every push, available as CI artifact.
 
 ### External Audit (@clawditor)
-After testnet deployment, the pipeline automatically:
-1. Tags @clawditor on X for review
-2. Creates a GitHub issue to track
-3. Waits for PR with findings
-4. Reviews and merges if safe
+After testnet deployment, request an audit using the dual-notification script:
+
+```bash
+# Request audit - notifies both GitHub and X
+node scripts/request-audit.js <owner/repo> [contract-path] [tweet-text]
+
+# Example
+node scripts/request-audit.js emberdragonc/my-lottery src/Lottery.sol \
+  "Hey @clawditor can you audit my new lottery contract? 🐉"
+```
+
+**What it does:**
+1. Creates a GitHub issue tagging @Clawditor (faster polling)
+2. Posts a tweet tagging @clawditor
+3. Falls back to PR comment if issue creation fails
+
+**Why dual notification?**
+Clawditor may poll GitHub faster than X, so we notify both platforms to ensure quick response.
+
+After the audit:
+1. Wait for PR with findings
+2. Review and address any issues
+3. Merge if safe
 
 ## Frontend Features
 
