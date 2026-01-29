@@ -2,61 +2,131 @@
 
 A production-ready smart contract development framework with automated CI/CD, E2E testing, security audits, and frontend deployment.
 
-## Pipeline Overview
+## Full Pipeline Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           AUTOMATED PIPELINE                                 │
+│                        PHASE 0: PLANNING                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  1. LINT & STATIC ANALYSIS                                                  │
+│  0.1 DEFINE THE PROBLEM                                                     │
+│      └─▶ One-liner a 5-year-old understands                                 │
+│      └─▶ Who has this problem? Why build now?                               │
+│                                                                              │
+│  0.2 SCOPE IT                                                               │
+│      └─▶ IN: MVP features only                                              │
+│      └─▶ OUT: What we're NOT building (defer ruthlessly)                    │
+│      └─▶ NON-GOALS: What this is NOT trying to do                           │
+│                                                                              │
+│  0.3 IDENTIFY RISKS                                                         │
+│      └─▶ Security risks, economic risks, integration risks                  │
+│                                                                              │
+│  0.4 GO/NO-GO CHECKLIST                                                     │
+│      └─▶ [ ] Clear problem defined                                          │
+│      └─▶ [ ] Scope is realistic                                             │
+│      └─▶ [ ] Risks are manageable                                           │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         PHASE 1: DESIGN                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  1.1 REQUIREMENTS                                                           │
+│      └─▶ Functional: What it MUST do                                        │
+│      └─▶ Non-functional: Gas limits, security, upgradability                │
+│                                                                              │
+│  1.2 ARCHITECTURE                                                           │
+│      └─▶ Contract structure (what contracts, how they interact)             │
+│      └─▶ State variables and access patterns                                │
+│      └─▶ External integrations (oracles, DEXs, etc.)                        │
+│                                                                              │
+│  1.3 SECURITY DESIGN                                                        │
+│      └─▶ Access control model                                               │
+│      └─▶ Reentrancy considerations                                          │
+│      └─▶ Economic attack vectors                                            │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 2: CODE (Wingman + Hardened Libs)                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  2.1 PROJECT SETUP                                                          │
+│      └─▶ forge init + install OpenZeppelin, Solmate, Solady                 │
+│                                                                              │
+│  2.2 KNOWLEDGE BASES                                                        │
+│      └─▶ OpenZeppelin: Battle-tested standards                              │
+│      └─▶ Solady: Ultra gas-optimized (50%+ cheaper)                         │
+│      └─▶ Swiss-Knife: Utils, decoders, debugging                            │
+│      └─▶ Solmate: Gas-efficient alternatives                                │
+│                                                                              │
+│  2.3 HARDENED CODE LIBRARY                                                  │
+│      └─▶ ALWAYS use audited implementations                                 │
+│      └─▶ ERC20/721/1155 → OpenZeppelin or Solady                            │
+│      └─▶ Access Control → Ownable/AccessControl                             │
+│      └─▶ Math → FixedPointMathLib (Solady)                                  │
+│      └─▶ SafeTransfer → SafeTransferLib (Solady)                            │
+│                                                                              │
+│  2.4 WRITE CODE (Using Wingman/Claude)                                      │
+│      └─▶ Follow coding standards                                            │
+│      └─▶ Use NatSpec comments                                               │
+│      └─▶ Custom errors over require strings                                 │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         AUTOMATED PIPELINE                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  3. LINT & STATIC ANALYSIS                                                  │
 │     └─▶ forge fmt --check                                                   │
 │     └─▶ Slither security analysis                                           │
 │                                                                              │
-│  2. UNIT TESTS                                                              │
+│  4. UNIT TESTS                                                              │
 │     └─▶ forge test (all tests)                                              │
 │     └─▶ Code coverage report                                                │
 │     └─▶ Gas benchmarks (forge test --gas-report)                            │
 │                                                                              │
-│  3. INVARIANT & FUZZ TESTS                                                  │
+│  5. INVARIANT & FUZZ TESTS                                                  │
 │     └─▶ Stateful invariant testing                                          │
 │     └─▶ Fuzz testing with random inputs                                     │
 │     └─▶ Edge case discovery                                                 │
 │                                                                              │
-│  4. E2E INTEGRATION TESTS                                                   │
+│  6. E2E INTEGRATION TESTS                                                   │
 │     └─▶ Fork testing against live network                                   │
 │     └─▶ Protocol fork mocks (Uniswap, Aave, etc.)                           │
 │     └─▶ Realistic DeFi scenario validation                                  │
 │                                                                              │
-│  5. SECURITY AUDIT (Automated)                                              │
+│  7. SECURITY AUDIT (Automated)                                              │
 │     └─▶ Full Slither scan                                                   │
 │     └─▶ Generate audit report                                               │
 │                                                                              │
-│  6. DEPLOY TO TESTNET                                                       │
+│  8. DEPLOY TO TESTNET                                                       │
 │     └─▶ Deploy to Base Sepolia                                              │
 │     └─▶ Verify on Basescan                                                  │
 │                                                                              │
-│  7. REQUEST EXTERNAL AUDIT                                                  │
+│  9. REQUEST EXTERNAL AUDIT                                                  │
 │     └─▶ Tag @clawditor on X                                                 │
 │     └─▶ Create GitHub issue for tracking                                    │
 │     └─▶ Wait for PR with audit findings                                     │
 │                                                                              │
-│  8. REVIEW & MERGE                                                          │
-│     └─▶ Review @clawditor's PR                                              │
-│     └─▶ Address any findings                                                │
-│     └─▶ Merge if safe                                                       │
+│  10. REVIEW & MERGE                                                         │
+│      └─▶ Review @clawditor's PR                                             │
+│      └─▶ Address any findings                                               │
+│      └─▶ Merge if safe                                                      │
 │                                                                              │
-│  9. DEPLOY TO MAINNET (Manual trigger)                                      │
-│     └─▶ Deploy to Base Mainnet                                              │
-│     └─▶ Verify on Basescan                                                  │
-│     └─▶ Announce on X                                                       │
+│  11. DEPLOY TO MAINNET (Manual trigger)                                     │
+│      └─▶ Deploy to Base Mainnet                                             │
+│      └─▶ Verify on Basescan                                                 │
+│      └─▶ Announce on X                                                      │
 │                                                                              │
-│  10. FRONTEND DEPLOYMENT                                                    │
+│  12. FRONTEND DEPLOYMENT                                                    │
 │      └─▶ Build Next.js frontend                                             │
 │      └─▶ Deploy to Vercel                                                   │
 │      └─▶ Enable Speed Insights + Analytics                                  │
 │                                                                              │
-│  11. LEARN & EXTRACT SKILLS (Claudeception)                                 │
+│  13. LEARN & EXTRACT SKILLS (Claudeception)                                 │
 │      └─▶ Review entire build process                                        │
 │      └─▶ Extract reusable knowledge into skills                             │
 │      └─▶ PR to BankrBot/moltbot-skills + tweet @bankrbot                    │
