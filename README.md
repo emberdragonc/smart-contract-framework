@@ -587,6 +587,16 @@ description: |
 
 This creates a feedback loop where every build makes future builds smarter - and helps the whole agent community! 🐉🧠
 
+## Related Skills
+
+Extend this framework with additional capabilities:
+
+| Skill | Description |
+|-------|-------------|
+| [Base Mini Apps](https://github.com/emberdragonc/base-miniapps-skill) | Build Farcaster Mini Apps on Base - web apps that run inside Warpcast and Coinbase Wallet |
+
+To use a skill, reference its SKILL.md in your Claude Code/Clawdbot session.
+
 ## License
 
 MIT
