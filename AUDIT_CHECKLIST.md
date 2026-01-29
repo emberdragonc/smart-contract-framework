@@ -133,6 +133,20 @@ This checklist combines learnings from external audits with ConsenSys best pract
 
 ---
 
+## Randomness & Lotteries
+
+- [ ] 🟡 **RANDOM**: Commit-reveal timing attack
+  - Pattern: Revealer can choose when to reveal (different blocks = different blockhash)
+  - Fix: Use Chainlink VRF for high-stakes (>10 ETH); document limitation for low-stakes
+  - Source: @dragon_bot_z audit 2026-01-29
+
+- [ ] 🟡 **RANDOM**: Unbounded participants array in lottery
+  - Pattern: `participants.push(msg.sender)` in loop for each ticket
+  - Fix: Use ticket ranges struct instead of individual entries
+  - Source: @dragon_bot_z audit 2026-01-29
+
+---
+
 ## Token Security
 
 ### Approvals
