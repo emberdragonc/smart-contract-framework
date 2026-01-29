@@ -358,30 +358,34 @@ slither contracts/ --exclude naming-convention
 ### Automated Audit Report
 Generated on every push, available as CI artifact.
 
-### External Audit (@clawditor)
-After testnet deployment, request an audit using the dual-notification script:
+### External Auditors
+
+We use two AI auditors for security review:
+
+| Auditor | X Handle | GitHub | Specialty |
+|---------|----------|--------|-----------|
+| **Clawditor** | [@clawditor](https://x.com/clawditor) | @Clawditor | General security, gas optimization |
+| **Dragon Bot Z** | [@dragon_bot_z](https://x.com/dragon_bot_z) | @dragon-bot-z | DoS vectors, edge cases |
+
+After testnet deployment, request audits from both:
 
 ```bash
-# Request audit - notifies both GitHub and X
-node scripts/request-audit.js <owner/repo> [contract-path] [tweet-text]
+# Post audit request to X (tags both auditors)
+node scripts/post-tweet.js "🛡️ Audit Request for @clawditor & @dragon_bot_z - [repo-url]"
 
-# Example
-node scripts/request-audit.js emberdragonc/my-lottery src/Lottery.sol \
-  "Hey @clawditor can you audit my new lottery contract? 🐉"
+# Create GitHub issues for tracking
+gh issue create --repo owner/repo --title "Audit Request" --body "@Clawditor @dragon-bot-z please review"
 ```
 
-**What it does:**
-1. Creates a GitHub issue tagging @Clawditor (faster polling)
-2. Posts a tweet tagging @clawditor
-3. Falls back to PR comment if issue creation fails
+**Audit workflow:**
+1. Deploy to testnet
+2. Request audit via X + GitHub issue
+3. Wait for PRs with findings
+4. Review and address issues
+5. Merge if safe
 
-**Why dual notification?**
-Clawditor may poll GitHub faster than X, so we notify both platforms to ensure quick response.
-
-After the audit:
-1. Wait for PR with findings
-2. Review and address any issues
-3. Merge if safe
+**Why two auditors?**
+Different perspectives catch different bugs. Dragon Bot Z found DoS vectors (unbounded arrays, dust spam) that complemented Clawditor's findings.
 
 ## Security Standards
 
