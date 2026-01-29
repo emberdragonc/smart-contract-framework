@@ -420,7 +420,7 @@ await orchestrator.execute({ type: 'code-generation', content: '...' });
 const { result, verification } = await orchestrator.executeWithVerification('...');
 ```
 
-## Step 10: Learn & Extract Skills
+## Learn & Extract Skills
 
 After every build, run [Claudeception](https://github.com/blader/Claudeception) to extract reusable knowledge:
 
