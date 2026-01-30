@@ -41,7 +41,7 @@ abstract contract PullPayment is ReentrancyGuard {
         totalPending -= amount;
 
         // Interaction: Transfer ETH
-        (bool success, ) = msg.sender.call{value: amount}("");
+        (bool success,) = msg.sender.call{ value: amount }("");
         if (!success) revert TransferFailed();
 
         emit PaymentWithdrawn(msg.sender, amount);
@@ -62,7 +62,7 @@ abstract contract PullPayment is ReentrancyGuard {
         totalPending -= amount;
 
         // Interaction
-        (bool success, ) = payee.call{value: amount}("");
+        (bool success,) = payee.call{ value: amount }("");
         if (!success) revert TransferFailed();
 
         emit PaymentWithdrawn(payee, amount);
@@ -87,10 +87,7 @@ abstract contract PullPayment is ReentrancyGuard {
     /// @param payees Array of addresses
     /// @param amounts Array of amounts
     /// @dev Arrays must be same length
-    function _allocatePaymentsBatch(
-        address[] calldata payees,
-        uint256[] calldata amounts
-    ) internal {
+    function _allocatePaymentsBatch(address[] calldata payees, uint256[] calldata amounts) internal {
         require(payees.length == amounts.length, "Length mismatch");
 
         for (uint256 i = 0; i < payees.length; i++) {
@@ -113,7 +110,6 @@ abstract contract PullPayment is ReentrancyGuard {
         return address(this).balance >= totalPending;
     }
 }
-
 
 /// @title ERC20PullPayment
 /// @notice Pull payment pattern for ERC20 tokens
@@ -156,11 +152,7 @@ abstract contract ERC20PullPayment is ReentrancyGuard {
     /// @param token The token address
     /// @param payee The recipient
     /// @param amount The amount to allocate
-    function _allocateTokenPayment(
-        address token,
-        address payee,
-        uint256 amount
-    ) internal {
+    function _allocateTokenPayment(address token, address payee, uint256 amount) internal {
         if (payee == address(0)) revert ZeroAddress();
         if (amount == 0) revert ZeroAmount();
 

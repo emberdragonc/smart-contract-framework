@@ -49,10 +49,7 @@ abstract contract OracleConsumer {
     /// @param price The raw price from oracle
     /// @param updatedAt When the price was last updated
     /// @return validatedPrice The validated price
-    function _validatePrice(
-        uint256 price,
-        uint256 updatedAt
-    ) internal view returns (uint256 validatedPrice) {
+    function _validatePrice(uint256 price, uint256 updatedAt) internal view returns (uint256 validatedPrice) {
         // Check for stale data
         if (block.timestamp - updatedAt > stalenessThreshold) {
             revert StalePrice();
@@ -85,10 +82,7 @@ abstract contract OracleConsumer {
     /// @param newPrice The new price
     /// @param oldPrice The reference price
     /// @return deviation The deviation in basis points
-    function _calculateDeviation(
-        uint256 newPrice,
-        uint256 oldPrice
-    ) internal pure returns (uint256 deviation) {
+    function _calculateDeviation(uint256 newPrice, uint256 oldPrice) internal pure returns (uint256 deviation) {
         if (newPrice >= oldPrice) {
             deviation = ((newPrice - oldPrice) * BPS_DENOMINATOR) / oldPrice;
         } else {
@@ -120,16 +114,12 @@ abstract contract OracleConsumer {
     }
 }
 
-
 /// @notice Chainlink Aggregator interface
 interface AggregatorV3Interface {
-    function latestRoundData() external view returns (
-        uint80 roundId,
-        int256 answer,
-        uint256 startedAt,
-        uint256 updatedAt,
-        uint80 answeredInRound
-    );
+    function latestRoundData()
+        external
+        view
+        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);
     function decimals() external view returns (uint8);
 }
 
@@ -137,7 +127,6 @@ interface AggregatorV3Interface {
 /// @notice Example implementation for Chainlink price feeds
 /// @dev Demonstrates how to implement OracleConsumer for Chainlink
 abstract contract ChainlinkConsumer is OracleConsumer {
-
     // ============ Errors ============
     error InvalidRound();
     error NegativePrice();
@@ -154,13 +143,7 @@ abstract contract ChainlinkConsumer is OracleConsumer {
     // ============ Implementation ============
 
     function _fetchOracleData() internal view override returns (uint256 price, uint256 updatedAt) {
-        (
-            uint80 roundId,
-            int256 answer,
-            ,
-            uint256 _updatedAt,
-            uint80 answeredInRound
-        ) = priceFeed.latestRoundData();
+        (uint80 roundId, int256 answer,, uint256 _updatedAt, uint80 answeredInRound) = priceFeed.latestRoundData();
 
         // Validate round
         if (answeredInRound < roundId) revert InvalidRound();

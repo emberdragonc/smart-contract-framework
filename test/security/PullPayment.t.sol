@@ -13,7 +13,7 @@ contract PullPaymentImpl is PullPayment {
         _allocatePaymentsBatch(payees, amounts);
     }
 
-    receive() external payable {}
+    receive() external payable { }
 }
 
 contract PullPaymentTest is Test {
