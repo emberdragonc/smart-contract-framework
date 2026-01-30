@@ -107,9 +107,17 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 - [ ] Basic functions tested on mainnet
 - [ ] Address documented in memory
 
-## Post-Deploy
-- [ ] README updated
+## Post-Deploy (Contract)
+- [ ] README updated with mainnet address
 - [ ] Tweet shipped 🐉
+
+## Frontend (BUILD AFTER MAINNET DEPLOY)
+**Only build frontend AFTER contract is on mainnet.** This avoids testnet→mainnet migration issues.
+
+Order:
+1. Contract on testnet → Audit → Contract on mainnet
+2. THEN build frontend with mainnet addresses
+3. No migration, no address swapping
 
 ## Autonomous Build Repository Management
 Each autonomous build gets its **own GitHub repository** to prevent bloat:
@@ -149,8 +157,8 @@ emberdragonc/ember-${PROJECT_NAME}/
 - Max 30 chars for descriptive name
 - Lowercase, hyphens only
 
-## Frontend: Testnet → Mainnet Migration
-When upgrading frontend from testnet to mainnet:
+## Frontend: Testnet → Mainnet Migration (DEPRECATED)
+**Prefer building frontend AFTER mainnet deploy instead.** This section is only for cases where frontend was built during testnet phase:
 
 ### Chain Configuration
 - [ ] **Put mainnet FIRST in chain array** - First chain = default
