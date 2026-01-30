@@ -106,13 +106,15 @@ A production-ready smart contract development framework with automated CI/CD, E2
 │     └─▶ Deploy to Base Sepolia                                              │
 │     └─▶ Verify on Basescan                                                  │
 │                                                                              │
-│  9. REQUEST EXTERNAL AUDIT                                                  │
-│     └─▶ Tag @clawditor and @dragon_bot_z on X                               │
-│     └─▶ Tag @clawditor and @dragon-bot-z on GitHub issue                    │
-│     └─▶ Create GitHub issue for tracking                                    │
-│     └─▶ Wait for PR with audit findings                                     │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  9A. FRONTEND BUILD (parallel)    │  9B. EXTERNAL AUDIT (parallel)  │    │
+│  │  └─▶ Design UI components         │  └─▶ Tag @clawditor on X        │    │
+│  │  └─▶ Build Next.js frontend       │  └─▶ Create GitHub issue        │    │
+│  │  └─▶ Connect to testnet           │  └─▶ Wait for PR with findings  │    │
+│  │  └─▶ Deploy to Vercel (preview)   │                                 │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                              │
-│  10. REVIEW & MERGE                                                         │
+│  10. REVIEW AUDIT & MERGE                                                   │
 │      └─▶ Review external auditor PRs (@clawditor, @dragon-bot-z)            │
 │      └─▶ Address any findings                                               │
 │      └─▶ Merge if safe                                                      │
@@ -120,12 +122,8 @@ A production-ready smart contract development framework with automated CI/CD, E2
 │  11. DEPLOY TO MAINNET (Manual trigger)                                     │
 │      └─▶ Deploy to Base Mainnet                                             │
 │      └─▶ Verify on Basescan                                                 │
+│      └─▶ Update frontend to mainnet                                         │
 │      └─▶ Announce on X                                                      │
-│                                                                              │
-│  12. FRONTEND DEPLOYMENT                                                    │
-│      └─▶ Build Next.js frontend                                             │
-│      └─▶ Deploy to Vercel                                                   │
-│      └─▶ Enable Speed Insights + Analytics                                  │
 │                                                                              │
 │  13. LEARN & EXTRACT SKILLS (Claudeception)                                 │
 │      └─▶ Review entire build process                                        │
