@@ -94,7 +94,12 @@ jobs:
 
       - name: Run E2E tests on fork
         run: |
-          forge test --match-path "test/e2e/*" -vvv --fork-url ${{ secrets.BASE_RPC_URL }}
+          if [ -n "${{ secrets.BASE_RPC_URL }}" ]; then
+            forge test --match-path "test/e2e/*" -vvv --fork-url ${{ secrets.BASE_RPC_URL }}
+          else
+            echo "⚠️ BASE_RPC_URL not set, running E2E tests without fork"
+            forge test --match-path "test/e2e/*" -vvv
+          fi
         env:
           FOUNDRY_PROFILE: ci
 
