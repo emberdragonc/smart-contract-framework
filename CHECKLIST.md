@@ -98,6 +98,44 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 - [ ] README updated
 - [ ] Tweet shipped 🐉
 
+## Autonomous Build Repository Management
+Each autonomous build gets its **own GitHub repository** to prevent bloat:
+
+### Repository Creation
+```bash
+# Create new repo for build
+gh repo create emberdragonc/ember-${PROJECT_NAME} --public --description "🐉 Built by Ember Autonomous Builder"
+
+# Initialize from template (NOT in smart-contract-framework)
+cd ~/projects
+mkdir ember-${PROJECT_NAME}
+cd ember-${PROJECT_NAME}
+forge init --template foundry-rs/forge-template
+```
+
+### Repository Structure
+```
+emberdragonc/ember-${PROJECT_NAME}/
+├── src/
+│   └── ${ContractName}.sol
+├── test/
+├── script/
+├── foundry.toml
+├── README.md
+└── AUDIT.md (if audited)
+```
+
+### Why Separate Repos?
+- **No bloat** - smart-contract-framework stays lean
+- **Clean audit trail** - each project has its own history
+- **Easy forking** - community can fork individual projects
+- **Independent versioning** - upgrades don't affect other projects
+
+### Naming Convention
+- Repo: `ember-${descriptive-name}` (e.g., `ember-lottery`, `ember-nft-raffle`)
+- Max 30 chars for descriptive name
+- Lowercase, hyphens only
+
 ## Frontend: Testnet → Mainnet Migration
 When upgrading frontend from testnet to mainnet:
 
