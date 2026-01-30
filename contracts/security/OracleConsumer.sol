@@ -121,21 +121,22 @@ abstract contract OracleConsumer {
 }
 
 
+/// @notice Chainlink Aggregator interface
+interface AggregatorV3Interface {
+    function latestRoundData() external view returns (
+        uint80 roundId,
+        int256 answer,
+        uint256 startedAt,
+        uint256 updatedAt,
+        uint80 answeredInRound
+    );
+    function decimals() external view returns (uint8);
+}
+
 /// @title ChainlinkConsumer
 /// @notice Example implementation for Chainlink price feeds
 /// @dev Demonstrates how to implement OracleConsumer for Chainlink
 abstract contract ChainlinkConsumer is OracleConsumer {
-    /// @notice Chainlink Aggregator interface
-    interface AggregatorV3Interface {
-        function latestRoundData() external view returns (
-            uint80 roundId,
-            int256 answer,
-            uint256 startedAt,
-            uint256 updatedAt,
-            uint80 answeredInRound
-        );
-        function decimals() external view returns (uint8);
-    }
 
     // ============ Errors ============
     error InvalidRound();
