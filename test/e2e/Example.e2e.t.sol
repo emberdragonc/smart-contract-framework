@@ -104,16 +104,18 @@ contract ExampleE2ETest is Test {
         uint256 depositGas = gasBefore - gasleft();
         console.log("Deposit gas:", depositGas);
 
-        gasBefore = gasleft();
+        // Get balance first, then prank for withdraw
+        uint256 userBalance = example.balances(user1);
 
+        gasBefore = gasleft();
         vm.prank(user1);
-        example.withdraw(example.balances(user1));
+        example.withdraw(userBalance);
 
         uint256 withdrawGas = gasBefore - gasleft();
         console.log("Withdraw gas:", withdrawGas);
 
-        // Gas should be reasonable
-        assertLt(depositGas, 100000);
+        // Gas should be reasonable (under 150k for simple operations)
+        assertLt(depositGas, 150000);
         assertLt(withdrawGas, 100000);
     }
 

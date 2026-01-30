@@ -147,19 +147,36 @@ contract ExampleTest is Test {
     }
 
     // ============================================
-    // Reentrancy Tests
+    // Reentrancy Tests (CEI Pattern)
     // ============================================
 
-    function test_Withdraw_ReentrancyProtection() public {
+    function test_Withdraw_CEI_PreventsReentrancy() public {
         ReentrancyAttacker attacker = new ReentrancyAttacker(address(example));
         vm.deal(address(attacker), 2 ether);
 
-        // Attacker deposits
-        attacker.deposit{ value: 1 ether }();
+        uint256 depositAmount = 1 ether;
+        uint256 expectedFee = (depositAmount * 100) / 10000; // 1%
+        uint256 expectedNet = depositAmount - expectedFee;
 
-        // Attack should fail due to reentrancy guard
-        vm.expectRevert();
+        // Attacker deposits
+        attacker.deposit{ value: depositAmount }();
+
+        // Record state before attack
+        uint256 contractBalanceBefore = address(example).balance;
+        uint256 attackerBalanceBefore = address(attacker).balance;
+
+        // Attack - CEI prevents reentrancy (no revert, but no extra funds either)
         attacker.attack();
+
+        // Verify attacker only got their original deposit, not more
+        // CEI ensures balance is 0 before external call, so reentrancy attempt finds nothing
+        // attackCount may be 1 (attacker tried but found 0 balance)
+        assertEq(example.balances(address(attacker)), 0, "Attacker balance should be 0");
+
+        // Attacker got exactly their deposit back (not 2x or more)
+        assertEq(
+            address(attacker).balance, attackerBalanceBefore + expectedNet, "Attacker should only get original deposit"
+        );
     }
 }
 

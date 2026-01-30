@@ -62,14 +62,17 @@ contract Example is Ownable, ReentrancyGuard {
     /**
      * @notice Withdraw ETH from the contract
      * @param amount Amount to withdraw
+     * @dev CEI pattern prevents reentrancy - no guard needed
      */
-    function withdraw(uint256 amount) external nonReentrant {
+    function withdraw(uint256 amount) external {
         if (amount == 0) revert ZeroAmount();
         if (balances[msg.sender] < amount) revert InsufficientBalance();
 
+        // EFFECTS before INTERACTIONS (CEI) - prevents reentrancy
         balances[msg.sender] -= amount;
         totalDeposits -= amount;
 
+        // INTERACTION - safe because state already updated
         (bool success,) = msg.sender.call{ value: amount }("");
         if (!success) revert TransferFailed();
 
