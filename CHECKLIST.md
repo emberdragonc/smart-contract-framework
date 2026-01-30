@@ -26,12 +26,25 @@ Quick reference for every contract I build.
 - [ ] Events for state changes
 - [ ] NatSpec comments
 
+## Style Guide
+Follow `docs/STYLE_GUIDE.md` for naming conventions and patterns.
+
 ## Hardened Code Used
 - [ ] Ownable/AccessControl for auth
-- [ ] ReentrancyGuard for external calls
+- [ ] **CEI pattern** for reentrancy protection (primary defense)
+- [ ] ReentrancyGuard **only when CEI is impossible** (flash loans, callbacks)
 - [ ] SafeERC20 for token transfers
 - [ ] SafeCast for type conversions
 - [ ] Math.mulDiv for safe multiplication
+
+### ReentrancyGuard Decision Tree
+```
+Does function make external calls?
+  NO  → Don't need guard
+  YES → Does it follow CEI (state updates BEFORE external calls)?
+          YES → Don't need guard (CEI is sufficient)
+          NO  → Use nonReentrant (e.g., flash loans, callbacks)
+```
 
 ## Testing
 - [ ] 90%+ coverage
