@@ -66,8 +66,12 @@ jobs:
         env:
           FOUNDRY_PROFILE: ci
 
-      - name: Run coverage
+      - name: Run Solidity coverage
         run: forge coverage --report summary
+      
+      - name: Run JS/TS tests with coverage
+        run: npx jest --coverage --passWithNoTests
+        continue-on-error: true
 
   # ============================================
   # STAGE 3: E2E / Integration Tests
