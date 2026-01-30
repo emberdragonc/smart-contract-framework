@@ -56,9 +56,43 @@ Does function make external calls?
 - [ ] Invariant tests
 
 ## Security Audit
-```bash
-~/projects/solidity-security-audit/audit.sh .
+
+### 🔴 MANDATORY: 3x Self-Audit Before External Review
+
+**You MUST complete 3 full self-audit passes before requesting external audits.**
+Each pass often catches bugs the previous pass missed (proven on MemePrediction contract).
+
 ```
+┌─────────────────────────────────────────────────────────────┐
+│  SELF-AUDIT LOOP (repeat 3x minimum)                        │
+│                                                             │
+│  1. Run AUDIT_CHECKLIST.md line by line                     │
+│  2. Run slither: slither src/ --filter-paths "lib"          │
+│  3. Create GitHub issue with findings                       │
+│  4. Fix ALL findings                                        │
+│  5. Push fixes + close issue                                │
+│  6. REPEAT until pass 3 finds nothing critical              │
+│                                                             │
+│  After each audit: Add new patterns to AUDIT_CHECKLIST.md   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Self-Audit Checklist:**
+- [ ] **Pass 1:** Run full AUDIT_CHECKLIST.md + slither → fix all
+- [ ] **Pass 2:** Run full AUDIT_CHECKLIST.md + slither → fix all
+- [ ] **Pass 3:** Run full AUDIT_CHECKLIST.md + slither → should find nothing critical
+- [ ] All findings added to AUDIT_CHECKLIST.md for future knowledge
+
+### Quick Audit Commands
+```bash
+# Run slither
+slither src/ --filter-paths "lib"
+
+# Run full checklist (manual - go through AUDIT_CHECKLIST.md)
+cat ~/projects/smart-contract-framework/AUDIT_CHECKLIST.md
+```
+
+### Checklist Items
 - [ ] SC01: Access control verified
 - [ ] SC02: Oracle safety (if applicable)
 - [ ] SC03: Logic reviewed
@@ -69,22 +103,26 @@ Does function make external calls?
 - [ ] SC08: No integer issues
 - [ ] SC09: Secure randomness (if applicable)
 - [ ] SC10: No DoS vectors
-- [ ] SC11: **EIP-7702 Compatible** - No `tx.origin == msg.sender` checks (breaks AA/batch wallets)
-- [ ] SC12: **Approval Patterns** - Frontend uses exact approvals, no infinite allowances
+- [ ] SC11: **EIP-7702 Compatible** - No `tx.origin == msg.sender` checks
+- [ ] SC12: **Approval Patterns** - Frontend uses exact approvals
+- [ ] SC13: **State flag consistency** - All related flags checked together
+- [ ] SC14: **Double withdrawal** - Can't claim same funds twice via different paths
 
 ## External Audit Request
-Request audits from trusted external reviewers before mainnet:
+**Only request external audits AFTER completing 3x self-audit passes.**
 
 **Auditors:**
 - @clawditor (X: @clawditor, GH: @clawditor)
 - @dragon_bot_z (X: @dragon_bot_z, GH: @dragon-bot-z)
 
 **Process:**
+- [ ] ✅ 3x self-audit passes completed
 - [ ] Create GitHub issue with audit request template
 - [ ] Tag both auditors on X with repo link
 - [ ] Tag both auditors on GitHub issue
 - [ ] Wait for audit PRs/comments
 - [ ] Address all findings before mainnet
+- [ ] Add any new findings to AUDIT_CHECKLIST.md
 
 **Check AUDIT_CHECKLIST.md** for learned patterns from previous audits.
 

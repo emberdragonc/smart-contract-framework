@@ -326,5 +326,79 @@ forge test -vvv
   - Fix: Lock goal once first contribution received
   - Source: BankrClubCrowdfund Ember Audit (if applicable)
 
+### From MemePrediction Audit (Ember Self-Audit x4)
+
+- [ ] 🔴 **DOUBLE WITHDRAWAL**: User can claim same funds via multiple paths
+  - Pattern: `emergencyRefund()` + `claimWinnings()` both pay from same balance
+  - Fix: Check ALL withdrawal flags in each claim function: `if (w.refunded) revert`
+  - Source: MemePrediction Ember Self-Audit Pass 4
+
+- [ ] 🔴 **DIVISION BY ZERO**: Winner selection with zero bets
+  - Pattern: Admin commits to coin that received zero bets, division fails
+  - Fix: Check `coinTotals[winningCoin] > 0` before resolution
+  - Source: MemePrediction Ember Self-Audit Pass 1
+
+- [ ] 🟠 **CANCELLED STATE INCOMPLETE**: New state flag not checked everywhere
+  - Pattern: Added `cancelled` flag but forgot to check in `resolveRound()`, `commitWinner()`
+  - Fix: When adding new state flags, grep for ALL functions that should check it
+  - Source: MemePrediction Ember Self-Audit Pass 2
+
+- [ ] 🟠 **VIEW FUNCTION STATE MISMATCH**: View functions return wrong values for edge states
+  - Pattern: `isBettingOpen()` returned true for cancelled rounds
+  - Fix: Update ALL view functions when adding new states
+  - Source: MemePrediction Ember Self-Audit Pass 2
+
+- [ ] 🟠 **CONSTRUCTOR ZERO CHECK**: Constructor accepts zero address for critical params
+  - Pattern: `constructor(address _feeRecipient)` without zero check
+  - Fix: Add zero checks in constructor, not just setters
+  - Source: MemePrediction Dragon_Bot_Z Audit
+
+- [ ] 🟡 **UNBOUNDED ARRAY PARAM**: Function accepts unbounded array
+  - Pattern: `createRound(string[] memory coins)` with no limit
+  - Fix: Add MAX_* constant and check length
+  - Source: MemePrediction Ember Self-Audit Pass 1
+
+- [ ] 🟡 **MINIMUM VALUE MISSING**: No minimum for user inputs
+  - Pattern: Users can send dust amounts (1 wei bets)
+  - Fix: Add MIN_WAGER or similar constants
+  - Source: MemePrediction Ember Self-Audit Pass 2
+
+- [ ] 🟡 **CENTRALIZED ORACLE**: Admin picks winner without verification
+  - Pattern: `resolveRound(winnerIndex)` with no proof
+  - Fix: Commit-reveal scheme OR oracle integration
+  - Source: MemePrediction Dragon_Bot_Z Audit
+
+- [ ] 🟡 **NO TIMEOUT PROTECTION**: Funds locked if admin disappears
+  - Pattern: No way for users to recover funds if admin never resolves
+  - Fix: Add REFUND_TIMEOUT allowing user withdrawal after X days
+  - Source: MemePrediction Dragon_Bot_Z Audit
+
+- [ ] 🟢 **OWNABLE VS OWNABLE2STEP**: Using single-step ownership transfer
+  - Pattern: `Ownable` allows accidental ownership loss
+  - Fix: Use `Ownable2Step` for safer transfers
+  - Source: MemePrediction Ember Self-Audit Pass 3
+
+---
+
+## Self-Audit Process (Mandatory)
+
+**Complete 3x self-audit passes before requesting external review:**
+
+```
+Pass 1: Fresh eyes, run full checklist → expect to find issues
+Pass 2: Post-fix review → often catches state consistency bugs
+Pass 3: Final review → should find nothing critical
+Pass 4+: If still finding criticals, keep going!
+```
+
+**After EACH pass:**
+1. Create GitHub issue with findings
+2. Fix all issues
+3. Push fixes
+4. Close issue
+5. ADD NEW PATTERNS TO THIS FILE
+
+**MemePrediction proof:** Found CRITICAL double-withdrawal bug on Pass 4 that Passes 1-3 missed.
+
 ---
 
