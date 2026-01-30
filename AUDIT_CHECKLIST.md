@@ -253,3 +253,78 @@ forge test -vvv
 - [docs/SECURITY-PHILOSOPHY.md](docs/SECURITY-PHILOSOPHY.md) - Security mindset
 - [docs/SECURITY-TOOLS.md](docs/SECURITY-TOOLS.md) - Analysis tools
 - [SWC Registry](https://swcregistry.io/) - Smart Contract Weakness Classification
+
+---
+
+## Recent Audit Findings (2026-01-30)
+
+### From EmberStaking Audits (Claude + Dragon_Bot_Z)
+
+- [ ] 🔴 **DEPRECATED TOKEN DRAIN**: emergencyWithdraw can drain unclaimed rewards for deprecated tokens
+  - Pattern: Owner can withdraw tokens that users haven't claimed yet
+  - Fix: Track total owed per token, only allow withdrawing surplus
+  - Source: EmberStaking Claude Audit H-1
+
+- [ ] 🟡 **BATCH CLAIM DOS**: Batch claimRewards() fails if any token transfer fails
+  - Pattern: Loop over tokens with external calls, one failure blocks all
+  - Fix: Add try/catch around individual transfers, emit failure event
+  - Source: EmberStaking Claude Audit M-1
+
+- [ ] 🟡 **FLASH-STAKE ATTACK**: Attacker can flash-stake before reward deposit
+  - Pattern: Stake right before rewards, claim proportional share, unstake
+  - Fix: Add minimum stake duration before rewards accrue, or snapshot balances
+  - Source: EmberStaking Claude Audit M-2
+
+- [ ] 🟡 **COOLDOWN RESET**: Adding to unstake request resets entire cooldown
+  - Pattern: User has pending unstake, requests more, entire cooldown restarts
+  - Fix: Pro-rata cooldown or separate unstake requests
+  - Source: EmberStaking Claude Audit M-3
+
+- [ ] 🟢 **MIN_STAKE BYPASS**: Compound functions may bypass minimum stake
+  - Pattern: claimAndRestake() adds to stake without checking MIN_STAKE
+  - Fix: Only concern if creating new stakes; existing stakers already passed check
+  - Source: EmberStaking Claude Audit (Accepted Risk)
+
+### From EmberLottery Audit (Dragon_Bot_Z)
+
+- [ ] 🟡 **COMMIT-REVEAL TIMING**: Revealer can influence randomness via block timing
+  - Pattern: On-chain randomness using blockhash is manipulable
+  - Fix: Use Chainlink VRF for high-stakes (>10 ETH) lotteries
+  - Source: EmberLottery Dragon_Bot_Z Audit
+
+- [ ] 🟡 **UNBOUNDED PARTICIPANTS**: Buying many tickets = many storage writes
+  - Pattern: Array grows unbounded with each ticket purchase
+  - Fix: Use ticket ranges instead of individual entries
+  - Source: EmberLottery Dragon_Bot_Z Audit
+
+- [ ] 🟢 **UNUSED STATE**: Dead code/unused variables
+  - Pattern: State variables declared but never used
+  - Fix: Remove unused code to reduce gas and attack surface
+  - Source: EmberLottery Dragon_Bot_Z Audit
+
+### From EmberArena Audit (Dragon_Bot_Z)
+
+- [ ] 🟢 **NO TIMELOCK ON EMERGENCY**: emergencyWithdraw has no timelock
+  - Pattern: Admin can instantly withdraw all funds
+  - Fix: Add timelock for emergency functions
+  - Source: EmberArena Dragon_Bot_Z Audit (Suggestion)
+
+- [ ] 🟢 **NO ROUND CANCELLATION**: No way to cancel a round if needed
+  - Pattern: Once round starts, no abort mechanism
+  - Fix: Add cancelRound() with refund logic for backers
+  - Source: EmberArena Dragon_Bot_Z Audit (Suggestion)
+
+- [ ] 🟢 **NO CLAIM DEADLINE**: Winners can claim forever
+  - Pattern: Unclaimed rewards sit in contract indefinitely
+  - Fix: Add claim deadline, sweep unclaimed to treasury after period
+  - Source: EmberArena Dragon_Bot_Z Audit (Suggestion)
+
+### From Clawdia BankrClubCrowdfund Audit (Ember)
+
+- [ ] 🟡 **CROWDFUND TARGET MANIPULATION**: Goal can be changed mid-campaign
+  - Pattern: Owner can adjust funding target after contributions
+  - Fix: Lock goal once first contribution received
+  - Source: BankrClubCrowdfund Ember Audit (if applicable)
+
+---
+
