@@ -98,6 +98,34 @@ forge script script/Deploy.s.sol --rpc-url base --broadcast --verify
 - [ ] README updated
 - [ ] Tweet shipped 🐉
 
+## Frontend: Testnet → Mainnet Migration
+When upgrading frontend from testnet to mainnet:
+
+### Chain Configuration
+- [ ] **Put mainnet FIRST in chain array** - First chain = default
+  ```typescript
+  // ❌ WRONG - defaults to testnet
+  chains: [baseSepolia, base]
+  
+  // ✅ CORRECT - defaults to mainnet
+  chains: [base, baseSepolia]
+  ```
+- [ ] Update ALL contract addresses in config
+- [ ] Update block explorer links (sepolia.basescan.org → basescan.org)
+- [ ] Remove or hide testnet from network selector (production builds)
+
+### Common Issues
+- Users connecting to wrong network → wallet prompts them to switch
+- Testnet contracts showing $0 balances on mainnet → check chainId logic
+- "Coming Soon" banners still showing → update to "NOW LIVE" 🎉
+
+### Checklist
+- [ ] `contracts.ts` has mainnet addresses filled in
+- [ ] `providers.tsx` has mainnet chain first
+- [ ] All hardcoded testnet links updated
+- [ ] Test with fresh browser (no cached wallet state)
+- [ ] Verify wallet auto-prompts for mainnet
+
 ## Frontend Design (0xdesigner)
 ```bash
 # Start design session
