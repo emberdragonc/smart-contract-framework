@@ -141,7 +141,8 @@ jobs:
     name: Deploy to Testnet
     runs-on: ubuntu-latest
     needs: audit
-    if: github.ref == 'refs/heads/main'
+    # Only run if on main AND secrets are configured
+    if: github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
     environment: testnet
     outputs:
       contract_address: ${{ steps.deploy.outputs.contract_address }}
@@ -187,7 +188,8 @@ jobs:
     name: Request Clawditor Audit
     runs-on: ubuntu-latest
     needs: deploy-testnet
-    if: github.ref == 'refs/heads/main'
+    # Only if testnet deploy succeeded
+    if: github.ref == 'refs/heads/main' && needs.deploy-testnet.result == 'success'
     steps:
       - uses: actions/checkout@v4
 
@@ -258,7 +260,9 @@ jobs:
   deploy-mainnet:
     name: Deploy to Mainnet
     runs-on: ubuntu-latest
-    needs: [audit, deploy-testnet]
+    needs: [audit]
+    # Manual trigger only + secrets required
+    if: github.event.inputs.deploy_mainnet == 'true' && vars.DEPLOY_ENABLED == 'true'
     if: github.event.inputs.deploy_mainnet == 'true'
     environment: mainnet
     steps:
@@ -322,8 +326,9 @@ jobs:
   frontend:
     name: Build & Deploy Frontend
     runs-on: ubuntu-latest
-    needs: deploy-testnet
-    if: github.ref == 'refs/heads/main'
+    needs: audit
+    # Only if on main AND deploy is enabled
+    if: github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
     steps:
       - uses: actions/checkout@v4
 
