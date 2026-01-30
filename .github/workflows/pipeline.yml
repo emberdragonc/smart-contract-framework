@@ -67,13 +67,7 @@ jobs:
           FOUNDRY_PROFILE: ci
 
       - name: Run coverage
-        run: forge coverage --report lcov
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./lcov.info
-          fail_ci_if_error: false
+        run: forge coverage --report summary
 
   # ============================================
   # STAGE 3: E2E / Integration Tests
