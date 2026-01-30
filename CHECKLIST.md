@@ -149,3 +149,12 @@ When upgrading frontend from testnet to mainnet:
 - [ ] **Exact approvals only** - no `type(uint256).max` approvals
 - [ ] **EIP-7702 batching** - detect smart wallets, batch approve+action when supported
 - [ ] **Fallback for EOAs** - 2-step approval flow for traditional wallets
+
+### Launch-Day UX Checklist (from Staking Launch 2026-01-30)
+- [ ] **Wrong network CTA** - "Switch to [Network]" button, not just error message
+- [ ] **"Check wallet" prompt** - Pulsing indicator when waiting for signature
+- [ ] **Popular wallets listed** - MetaMask, Coinbase, Rabby, Phantom, Rainbow (don't rely on WalletConnect alone)
+- [ ] **Context metrics** - Show % of supply, user's share, not just raw numbers
+- [ ] **Mobile tested** - Test actual flow on mobile devices
+- [ ] **Multi-wallet tested** - Test MetaMask, Coinbase, Rabby, Phantom
+- [ ] **Error messages** - User-friendly text for rejections, failures, allowance issues
