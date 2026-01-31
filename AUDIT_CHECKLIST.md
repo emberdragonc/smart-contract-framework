@@ -420,3 +420,36 @@ The bug would have been caught on Pass 1 with invariant test: `withdrawn + refun
 
 ---
 
+
+### From EmberArena Audit (Ember Self-Audit x3)
+
+- [ ] 🔴 **DIVISION BY ZERO (THRESHOLD)**: Division by value that can be zero due to configurable threshold
+  - Pattern: `amount / totalBacking` where totalBacking can be 0 if minThreshold allows
+  - Fix: Add explicit `if (denominator == 0) revert` check, OR ensure threshold prevents zero
+  - Source: EmberArena Ember Self-Audit Pass 1
+
+- [ ] 🟠 **NO TIMEOUT REFUND**: Funds locked if admin never resolves
+  - Pattern: User deposits require admin action to unlock, no fallback
+  - Fix: Add REFUND_TIMEOUT constant (e.g., 7 days), allow user withdrawal after timeout
+  - Source: EmberArena Ember Self-Audit Pass 1
+
+- [ ] 🟠 **EMERGENCY WITHDRAW UNRESTRICTED**: Owner can drain user funds mid-operation
+  - Pattern: `emergencyWithdraw()` works on primary token during active rounds
+  - Fix: Restrict emergency withdrawal of primary token when user funds at risk
+  - Source: EmberArena Ember Self-Audit Pass 1
+
+- [ ] 🟡 **FREE SUBMISSION GRIEFING**: No cost to submit entries allows spam attacks
+  - Pattern: `submit()` function with no fee or token requirement
+  - Fix: Require small fee, minimum token holding, or allowlist
+  - Source: EmberArena Ember Self-Audit Pass 3
+
+- [ ] 🟡 **SELF-PARTICIPATION**: Users can participate in their own submissions
+  - Pattern: Creator can back/vote for own submission, inflating metrics
+  - Fix: Track self-participation separately, or prevent entirely
+  - Source: EmberArena Ember Self-Audit Pass 2
+
+- [ ] 🟢 **NO CANCEL MECHANISM**: No way to cancel stuck operations
+  - Pattern: Operation starts but no clean abort path if conditions can't be met
+  - Fix: Add cancel function with appropriate refund logic
+  - Source: EmberArena Ember Self-Audit Pass 2
+
