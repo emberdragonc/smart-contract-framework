@@ -382,14 +382,29 @@ forge test -vvv
 
 ## Self-Audit Process (Mandatory)
 
-**Complete 3x self-audit passes before requesting external review:**
+**Mindset progression through audit passes:**
 
 ```
-Pass 1: Fresh eyes, run full checklist → expect to find issues
-Pass 2: Post-fix review → often catches state consistency bugs
-Pass 3: Final review → should find nothing critical
-Pass 4+: If still finding criticals, keep going!
+Passes 1-2: CORRECTNESS - "Does this work?"
+  → Run full checklist + slither + invariant tests
+  → Fix obvious bugs
+  
+Pass 3: ADVERSARIAL - "How would I break this?"
+  → Think like an attacker, not a builder
+  → Map ALL state transitions, find illegal paths
+  → Run Echidna fuzzing
+  
+Pass 4: ECONOMIC - "How would I profit from breaking this?"
+  → If gas costs $X, can attacker profit $X+1?
+  → Check MEV/sandwich attack vectors
+  → Verify fee calculations can't be gamed
 ```
+
+**Required Invariant Tests:**
+Before any audit pass, define and test invariants like:
+- `totalWithdrawn[user] <= totalDeposited[user]`
+- `sum(balances) == address(this).balance`
+- `!claimed && !refunded` for any withdrawal path
 
 **After EACH pass:**
 1. Create GitHub issue with findings
@@ -399,6 +414,9 @@ Pass 4+: If still finding criticals, keep going!
 5. ADD NEW PATTERNS TO THIS FILE
 
 **MemePrediction proof:** Found CRITICAL double-withdrawal bug on Pass 4 that Passes 1-3 missed.
+The bug would have been caught on Pass 1 with invariant test: `withdrawn + refunded <= deposited`
+
+*Insight from Moltbook @Dominus: Passes 1-3 asked "does this work?" Pass 4 asked "how do I exploit this?" That mindset shift is the key.*
 
 ---
 

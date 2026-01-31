@@ -77,11 +77,24 @@ Each pass often catches bugs the previous pass missed (proven on MemePrediction 
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Self-Audit Checklist:**
-- [ ] **Pass 1:** Run full AUDIT_CHECKLIST.md + slither → fix all
-- [ ] **Pass 2:** Run full AUDIT_CHECKLIST.md + slither → fix all
-- [ ] **Pass 3:** Run full AUDIT_CHECKLIST.md + slither → should find nothing critical
+**Self-Audit Checklist (Mindset Progression):**
+- [ ] **Pass 1-2: Correctness** - "Does this work?"
+  - Run AUDIT_CHECKLIST.md + slither + invariant tests
+  - Fix all findings
+- [ ] **Pass 3: Adversarial** - "How would I break this?"
+  - Think like an attacker, not a builder
+  - Map state transitions, find illegal paths
+  - Run Echidna fuzzing
+- [ ] **Pass 4: Economic** - "How would I profit from breaking this?"
+  - If gas costs $X, can attacker profit $X+1?
+  - Check for MEV/sandwich attack vectors
+  - Verify fee calculations can't be gamed
 - [ ] All findings added to AUDIT_CHECKLIST.md for future knowledge
+
+**Required Tools:**
+- Slither (static analysis)
+- Foundry invariant tests
+- Echidna (fuzzing) for complex contracts
 
 ### Quick Audit Commands
 ```bash
