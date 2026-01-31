@@ -319,3 +319,38 @@ The manual `--verifier-url` overrides foundry.toml and may hit deprecated v1 end
 - "Manual verification of results" ❌
 
 If you see these patterns → add oracle integration first.
+
+## 🌐 Frontend Deployment (ALWAYS SUBDOMAINS)
+
+**Each app gets its own subdomain. NEVER deploy multiple apps to the same Vercel project.**
+
+### Subdomain Convention:
+```
+appname.ember.engineer
+```
+
+Examples:
+- staking.ember.engineer
+- battles.ember.engineer  
+- predict.ember.engineer
+- reputation.ember.engineer
+
+### Vercel Setup for New App:
+```bash
+cd /path/to/app/frontend
+npx vercel link  # Create NEW project, don't reuse existing
+npx vercel domains add appname.ember.engineer
+npx vercel --prod
+```
+
+### Why Subdomains:
+- Apps don't overwrite each other
+- Clean separation of concerns
+- Can deploy/rollback independently
+- Professional appearance
+
+### DNS (Vercel handles automatically):
+- Vercel auto-provisions SSL
+- Just add the domain in Vercel dashboard or CLI
+
+**Never ask "should I use subdomains?" - the answer is ALWAYS yes.**
