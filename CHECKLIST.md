@@ -287,3 +287,35 @@ forge script ... --verify --etherscan-api-key $ETHERSCAN_API_KEY
 ```
 
 The manual `--verifier-url` overrides foundry.toml and may hit deprecated v1 endpoint.
+
+## 🔐 Trustless Design Principle (MANDATORY)
+
+**INVIOLABLE: All outcome determination must be trustless via oracles.**
+
+### Rules:
+- ❌ Admin/owner should NEVER select winners or outcomes
+- ❌ No "manual checking" of external data
+- ✅ All determinations must be on-chain via oracles
+- ✅ Admin role = setup/emergency ONLY
+
+### Oracle Options for Base:
+| Oracle | Best For | Notes |
+|--------|----------|-------|
+| **Chainlink Price Feeds** | Major tokens | Most reliable, limited coverage |
+| **Pyth Network** | More tokens | Pull-based, good meme coverage |
+| **Chainlink Functions** | Custom APIs | Call DeFiLlama, CoinGecko, etc. |
+| **UMA Optimistic Oracle** | Subjective outcomes | Dispute mechanism |
+
+### When Building Prediction Markets:
+1. ✅ Store oracle addresses per asset at round creation
+2. ✅ Snapshot starting prices on-chain
+3. ✅ Let ANYONE call resolve after deadline
+4. ✅ Contract reads oracles and determines winner
+5. ✅ Handle stale price / oracle failure gracefully
+
+### Red Flags (STOP and redesign):
+- "Admin resolves with winning index" ❌
+- "Owner commits hash of winner" ❌
+- "Manual verification of results" ❌
+
+If you see these patterns → add oracle integration first.
