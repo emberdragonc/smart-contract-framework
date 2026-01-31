@@ -453,3 +453,26 @@ The bug would have been caught on Pass 1 with invariant test: `withdrawn + refun
   - Fix: Add cancel function with appropriate refund logic
   - Source: EmberArena Ember Self-Audit Pass 2
 
+
+### From AgentBattles Audit (Ember Self-Audit x3)
+
+- [ ] 🔴 **MISSING REENTRANCY GUARD**: No ReentrancyGuard despite external calls
+  - Pattern: Uses `.call{value}` for ETH transfers without ReentrancyGuard modifier
+  - Fix: Always add ReentrancyGuard even when CEI is followed (defense in depth)
+  - Source: AgentBattles Ember Self-Audit Pass 1
+
+- [ ] 🔴 **CROSS-ENTITY SWEEP BUG**: Admin sweep function drains unrelated funds
+  - Pattern: `sweepUnclaimed(battleId)` sweeps entire contract balance, not just that battle
+  - Fix: Track claimable amounts per entity, only sweep specific entity's unclaimed
+  - Source: AgentBattles Ember Self-Audit Pass 3
+
+- [ ] 🟠 **CREATOR STAKE HOSTAGE**: Creator's deposit has no refund path
+  - Pattern: Creator stakes ETH, but only bettors can refund; creator loses stake if stuck
+  - Fix: Add dedicated `creatorRefund()` function with same timeout as bettor refunds
+  - Source: AgentBattles Ember Self-Audit Pass 1
+
+- [ ] 🟡 **NO ADMIN FALLBACK FOR TRUSTED ROLES**: Trusted role disappears, funds stuck
+  - Pattern: Judge-only resolution with no owner fallback after timeout
+  - Fix: Add extended timeout (e.g., 14 days) after which owner can intervene
+  - Source: AgentBattles Ember Self-Audit Pass 2
+
