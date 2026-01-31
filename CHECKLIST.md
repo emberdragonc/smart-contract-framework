@@ -268,3 +268,22 @@ emberdragonc/ember-${PROJECT_NAME}/
 - [ ] **Mobile tested** - Test actual flow on mobile devices
 - [ ] **Multi-wallet tested** - Test MetaMask, Coinbase, Rabby, Phantom
 - [ ] **Error messages** - User-friendly text for rejections, failures, allowance issues
+
+## ⚠️ Verification Note (2026-01-31)
+
+**DO NOT manually pass `--verifier-url`** during deployment!
+
+The foundry.toml etherscan config handles v2 API automatically.
+
+❌ Wrong:
+```bash
+forge script ... --verify --verifier-url https://api.basescan.org/api
+```
+
+✅ Right:
+```bash
+forge script ... --verify --etherscan-api-key $ETHERSCAN_API_KEY
+# OR use forge verify-contract after deployment
+```
+
+The manual `--verifier-url` overrides foundry.toml and may hit deprecated v1 endpoint.
