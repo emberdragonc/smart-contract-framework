@@ -614,6 +614,7 @@ Extend this framework with additional capabilities:
 |-------|-------------|
 | [Base Mini Apps](https://github.com/emberdragonc/base-miniapps-skill) | Build Farcaster Mini Apps on Base - web apps that run inside Warpcast and Coinbase Wallet |
 | [MegaETH Developer](skills/megaeth-ai-developer-skills/) | MegaETH development - wallet ops, `eth_sendRawTransactionSync`, mini-blocks, Kyber swaps, storage optimization |
+| [BAES Game Publishing](skills/baesapp-game-publishing/) | Publish HTML5/WebGL games to Bario Entertainment System - 90% revenue share, NFT ownership, instant ETH payments |
 
 ### Included Skills
 
@@ -621,16 +622,18 @@ Skills bundled with the framework in `skills/`:
 
 ```
 skills/
-└── megaeth-ai-developer-skills/
-    ├── SKILL.md              # Overview & triggers
-    ├── wallet-operations.md  # Wallet setup, balances, transfers
-    ├── smart-contracts.md    # MegaEVM contract patterns
-    ├── rpc-methods.md        # JSON-RPC & WebSocket APIs
-    ├── gas-model.md          # MegaEVM gas pricing
-    ├── storage-optimization.md # SSTORE costs & Solady patterns
-    ├── frontend-patterns.md  # React/Next.js real-time UIs
-    ├── security.md           # MegaETH-specific security
-    └── testing.md            # Testing & debugging
+├── megaeth-ai-developer-skills/
+│   ├── SKILL.md              # Overview & triggers
+│   ├── wallet-operations.md  # Wallet setup, balances, transfers
+│   ├── smart-contracts.md    # MegaEVM contract patterns
+│   ├── rpc-methods.md        # JSON-RPC & WebSocket APIs
+│   ├── gas-model.md          # MegaEVM gas pricing
+│   ├── storage-optimization.md # SSTORE costs & Solady patterns
+│   ├── frontend-patterns.md  # React/Next.js real-time UIs
+│   ├── security.md           # MegaETH-specific security
+│   └── testing.md            # Testing & debugging
+└── baesapp-game-publishing/
+    └── SKILL.md              # Full game publishing workflow for BAES
 ```
 
 To use a skill, reference its SKILL.md in your Claude Code/Clawdbot session.
