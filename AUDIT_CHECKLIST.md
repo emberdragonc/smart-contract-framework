@@ -351,6 +351,11 @@ forge test -vvv
 - [ ] 🟠 **CONSTRUCTOR ZERO CHECK**: Constructor accepts zero address for critical params
   - Pattern: `constructor(address _feeRecipient)` without zero check
   - Fix: Add zero checks in constructor, not just setters
+
+- [ ] 🟠 **ADMIN SETTER ZERO CHECK**: Admin functions accept zero address
+  - Pattern: `setSigner(address newSigner)` or `setTreasury(address)` without zero check
+  - Fix: Add `if (newAddress == address(0)) revert ZeroAddress();` at start of function
+  - Source: MoltENS self-audit 2026-02-02
   - Source: MemePrediction Dragon_Bot_Z Audit
 
 - [ ] 🟡 **UNBOUNDED ARRAY PARAM**: Function accepts unbounded array
