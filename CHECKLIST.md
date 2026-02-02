@@ -2,6 +2,9 @@
 
 Quick reference for every contract I build.
 
+> 🚨 **HARD GATE**: No mainnet deploy without `AUDIT_STATUS.md` in project root!
+> See `AUDIT_GATE.md` for required format. All 3 self-audit passes MUST be documented.
+
 ## Phase 0: Planning (Get Shit Done)
 - [ ] One-liner defined (5-year-old test)
 - [ ] Problem statement clear
