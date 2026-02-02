@@ -172,6 +172,15 @@ cd frontend && npm install && npm run build
 │   ├── app/                    # Next.js app
 │   ├── vercel.json             # Vercel config with analytics
 │   └── package.json
+├── skills/
+│   └── megaeth-ai-developer-skills/  # MegaETH development skill
+├── docs/
+│   ├── KNOWN-ATTACKS.md        # Security attack vectors
+│   ├── PATTERNS.md             # Secure code patterns
+│   └── ...                     # More security docs
+├── CHECKLIST.md                # Master build checklist
+├── AUDIT_CHECKLIST.md          # Security audit checklist
+├── AUDIT_GATE.md               # Mandatory pre-deploy gate
 ├── foundry.toml                # Foundry config
 └── README.md
 ```
@@ -328,6 +337,18 @@ Comprehensive security resources based on [ConsenSys Best Practices](https://con
 | [docs/SECURITY-TOOLS.md](docs/SECURITY-TOOLS.md) | Analysis tools guide (Slither, Echidna, Mythril) |
 | [docs/DEPLOYMENT-CHECKLIST.md](docs/DEPLOYMENT-CHECKLIST.md) | Pre-deployment security checklist |
 | [AUDIT_CHECKLIST.md](AUDIT_CHECKLIST.md) | Growing checklist from external audits |
+| [AUDIT_GATE.md](AUDIT_GATE.md) | **MANDATORY** pre-deploy verification gate |
+
+### 🚨 Audit Gate (MANDATORY)
+
+**No mainnet deployment without completing the audit gate!**
+
+Before ANY mainnet deploy:
+1. Create `AUDIT_STATUS.md` in your project root
+2. Complete ALL 3 self-audit passes (documented)
+3. Verify: `cat AUDIT_STATUS.md | grep -c "\[x\]"` must be >= 12
+
+See [AUDIT_GATE.md](AUDIT_GATE.md) for the required format and process.
 
 ### Security Contracts
 
@@ -592,6 +613,25 @@ Extend this framework with additional capabilities:
 | Skill | Description |
 |-------|-------------|
 | [Base Mini Apps](https://github.com/emberdragonc/base-miniapps-skill) | Build Farcaster Mini Apps on Base - web apps that run inside Warpcast and Coinbase Wallet |
+| [MegaETH Developer](skills/megaeth-ai-developer-skills/) | MegaETH development - wallet ops, `eth_sendRawTransactionSync`, mini-blocks, Kyber swaps, storage optimization |
+
+### Included Skills
+
+Skills bundled with the framework in `skills/`:
+
+```
+skills/
+└── megaeth-ai-developer-skills/
+    ├── SKILL.md              # Overview & triggers
+    ├── wallet-operations.md  # Wallet setup, balances, transfers
+    ├── smart-contracts.md    # MegaEVM contract patterns
+    ├── rpc-methods.md        # JSON-RPC & WebSocket APIs
+    ├── gas-model.md          # MegaEVM gas pricing
+    ├── storage-optimization.md # SSTORE costs & Solady patterns
+    ├── frontend-patterns.md  # React/Next.js real-time UIs
+    ├── security.md           # MegaETH-specific security
+    └── testing.md            # Testing & debugging
+```
 
 To use a skill, reference its SKILL.md in your Claude Code/Clawdbot session.
 
