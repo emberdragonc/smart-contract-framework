@@ -87,7 +87,72 @@ Example: "People give money to projects, get it back if the project fails."
 - What if a competitor ships first?
 - What if requirements change?
 
-## 6. DEPENDENCIES - Map the Terrain
+## 6. OFF-CHAIN STORAGE - Data Architecture
+
+Before building, decide what goes on-chain vs off-chain. On-chain storage is expensive (~$10-50 per KB).
+
+### Storage Decision Matrix
+| Data Type | On-Chain? | Off-Chain? | Rationale |
+|-----------|-----------|------------|-----------|
+| User balances | ✅ | ❌ | Must be trustless |
+| Vote counts | ✅ | ❌ | Must be verifiable |
+| Images/media | ❌ | ✅ | Too large for chain |
+| Rich metadata | ❌ | ✅ | Gas prohibitive |
+| Timestamps | ✅ | ❌ | Block timestamp |
+| Text content | ? | ? | Depends on size |
+
+### Off-Chain Storage Checklist
+- [ ] What data is too large/expensive for on-chain?
+- [ ] What's the reference format? (IPFS hash, URL, `arena://uuid`)
+- [ ] Storage backend chosen (Supabase/IPFS/Arweave/S3)?
+- [ ] How will on-chain ↔ off-chain data be linked?
+- [ ] What happens if off-chain storage is unavailable?
+- [ ] Are there migration concerns for existing data?
+- [ ] Feature flags for gradual rollout?
+
+### Storage Backend Options
+| Backend | Pros | Cons | Cost |
+|---------|------|------|------|
+| **Supabase** | Easy, Postgres, 500MB free | Centralized | Free tier |
+| **IPFS + Pinata** | Decentralized, content-addressed | Needs pinning | ~$0.15/GB |
+| **Arweave** | Permanent, decentralized | Costs AR tokens | ~$5/GB permanent |
+| **Cloudflare R2** | 10GB free, fast CDN | Centralized | $0.015/GB |
+
+### Reference Format Convention
+```
+On-chain string format: "{protocol}://{identifier}"
+Examples:
+- "arena://550e8400-e29b-41d4-a716-446655440000" (Supabase)
+- "ipfs://QmXxx..." (IPFS)
+- "ar://xxx..." (Arweave)
+
+Detection: Check prefix, fetch from appropriate backend
+Legacy: No prefix = inline data (backward compat)
+```
+
+### Database Schema Template (Supabase)
+```sql
+CREATE TABLE entries (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  chain_id INTEGER NOT NULL,           -- Which chain
+  contract_address TEXT NOT NULL,      -- Which contract
+  onchain_id BIGINT,                   -- ID in contract
+  
+  -- Off-chain content
+  content_json JSONB NOT NULL,
+  image_url TEXT,
+  
+  -- Linkage
+  content_hash TEXT NOT NULL,          -- SHA-256 for verification
+  onchain_tx_hash TEXT,                -- When submitted
+  
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+---
+
+## 7. DEPENDENCIES - Map the Terrain
 
 ### External Dependencies
 - [ ] Contracts I'm building on (OpenZeppelin, etc.)
@@ -104,7 +169,7 @@ Example: "People give money to projects, get it back if the project fails."
 - [ ] Time required
 - [ ] Audit budget
 
-## 7. MILESTONES - Break It Down
+## 8. MILESTONES - Break It Down
 
 ### Milestone 1: [Name]
 - **Goal:** What's done when this is complete?
@@ -118,7 +183,7 @@ Example: "People give money to projects, get it back if the project fails."
 ### Milestone 3: [Name]
 ...
 
-## 8. DECISION LOG
+## 9. DECISION LOG
 
 Track key decisions and why:
 
@@ -126,14 +191,14 @@ Track key decisions and why:
 |----------|-------------------|--------|-----------|------|
 | ? | A, B, C | B | Because... | YYYY-MM-DD |
 
-## 9. OPEN QUESTIONS
+## 10. OPEN QUESTIONS
 
 Things I still need to figure out:
 - [ ] Question 1
 - [ ] Question 2
 - [ ] Question 3
 
-## 10. GO/NO-GO
+## 11. GO/NO-GO
 
 Before proceeding to Design, confirm:
 
